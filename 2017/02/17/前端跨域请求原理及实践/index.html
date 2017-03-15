@@ -8,39 +8,27 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>前端跨域请求原理及实践 | 生命不息，奋斗不止</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="作者：高鹏
-tingandpeng.com/2016/09/05/前端跨域请求原理及实践/
-如有好文章投稿，请点击 → 这里了解详情
-
-一、 跨域请求的含义
+  <meta name="description" content="一、 跨域请求的含义
 浏览器的同源策略，出于防范跨站脚本的攻击，禁止客户端脚本（如 JavaScript）对不同域的服务进行跨站调用。
-一般的，只要网站的 协议名protocol、 主机host、 端口号port 这三个中的任意一个不同，网站间的数据请求与传输便">
+一般的，只要网站的 协议名protocol、 主机host、 端口号port 这三个中的任意一个不同，网站间的数据请求与传输便构成了跨域调用。这也是我们下面实践的理论基础。我们利用 NodeJs 创建了两个服务器，分别监听 3000、 3001 端口（下面简称 服">
 <meta property="og:type" content="article">
 <meta property="og:title" content="前端跨域请求原理及实践">
 <meta property="og:url" content="http://yoursite.com/2017/02/17/前端跨域请求原理及实践/index.html">
 <meta property="og:site_name" content="生命不息，奋斗不止">
-<meta property="og:description" content="作者：高鹏
-tingandpeng.com/2016/09/05/前端跨域请求原理及实践/
-如有好文章投稿，请点击 → 这里了解详情
-
-一、 跨域请求的含义
+<meta property="og:description" content="一、 跨域请求的含义
 浏览器的同源策略，出于防范跨站脚本的攻击，禁止客户端脚本（如 JavaScript）对不同域的服务进行跨站调用。
-一般的，只要网站的 协议名protocol、 主机host、 端口号port 这三个中的任意一个不同，网站间的数据请求与传输便">
+一般的，只要网站的 协议名protocol、 主机host、 端口号port 这三个中的任意一个不同，网站间的数据请求与传输便构成了跨域调用。这也是我们下面实践的理论基础。我们利用 NodeJs 创建了两个服务器，分别监听 3000、 3001 端口（下面简称 服">
 <meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib14u1p5qwMSKMsNvfQUeU0ckRujt0pLM9qyuicoeJ5DM8V1icsWKzGiaOria2hkzLg6dLe81ODPWJW9sQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
 <meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib14u1p5qwMSKMsNvfQUeU0coGHLbicLy9uWnL1MbMUiaicTMUVZ7fJnbE6me8ZBCMmKoplEg4t8ibm9jQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
 <meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib14u1p5qwMSKMsNvfQUeU0c3G6fv4PRbpV6T5TlDQ45iaiaM5EicDicNwm86atEIXsAVtaxz8T8nlE3WQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
 <meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib14u1p5qwMSKMsNvfQUeU0cBlA3pC1azdbX6STic1B9VmwuP4wdCjReXzyx6UgB2TAiboqg5vIqEaPA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
 <meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib14u1p5qwMSKMsNvfQUeU0cwZmFB4zHp1G2HEW3WLb532szlSVwma9doru5iayt4VVSk1fqfdmaM1g/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
-<meta property="og:updated_time" content="2017-03-15T12:57:01.660Z">
+<meta property="og:updated_time" content="2017-03-15T13:03:12.651Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="前端跨域请求原理及实践">
-<meta name="twitter:description" content="作者：高鹏
-tingandpeng.com/2016/09/05/前端跨域请求原理及实践/
-如有好文章投稿，请点击 → 这里了解详情
-
-一、 跨域请求的含义
+<meta name="twitter:description" content="一、 跨域请求的含义
 浏览器的同源策略，出于防范跨站脚本的攻击，禁止客户端脚本（如 JavaScript）对不同域的服务进行跨站调用。
-一般的，只要网站的 协议名protocol、 主机host、 端口号port 这三个中的任意一个不同，网站间的数据请求与传输便">
+一般的，只要网站的 协议名protocol、 主机host、 端口号port 这三个中的任意一个不同，网站间的数据请求与传输便构成了跨域调用。这也是我们下面实践的理论基础。我们利用 NodeJs 创建了两个服务器，分别监听 3000、 3001 端口（下面简称 服">
 <meta name="twitter:image" content="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib14u1p5qwMSKMsNvfQUeU0ckRujt0pLM9qyuicoeJ5DM8V1icsWKzGiaOria2hkzLg6dLe81ODPWJW9sQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
   
     <link rel="alternative" href="/atom.xml" title="生命不息，奋斗不止" type="application/atom+xml">
@@ -195,16 +183,12 @@ tingandpeng.com/2016/09/05/前端跨域请求原理及实践/
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<p>作者：高鹏</p>
-<p>tingandpeng.com/2016/09/05/前端跨域请求原理及实践/</p>
-<p><a href="http://mp.weixin.qq.com/s?__biz=MzAxODE2MjM1MA==&amp;mid=402764500&amp;idx=1&amp;sn=cfcc178c7718d548b7cdc04758502bd9&amp;scene=21#wechat_redirect" target="_blank" rel="external">如有好文章投稿，请点击 → 这里了解详情</a></p>
-</blockquote>
-<p><strong>一、 跨域请求的含义</strong></p>
+        <p><strong>一、 跨域请求的含义</strong></p>
 <p>浏览器的同源策略，出于防范跨站脚本的攻击，禁止客户端脚本（如 JavaScript）对不同域的服务进行跨站调用。</p>
 <p>一般的，只要网站的 协议名protocol、 主机host、 端口号port 这三个中的任意一个不同，网站间的数据请求与传输便构成了跨域调用。这也是我们下面实践的理论基础。我们利用 NodeJs 创建了两个服务器，分别监听 3000、 3001 端口（下面简称 服务器3000 与 服务器3001 ），由于端口号不一样，这两个服务器以及服务器上页面通信构成了跨域请求。</p>
 <p>在服务器3000 上有如下的页面：</p>
 <p><img src="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib14u1p5qwMSKMsNvfQUeU0ckRujt0pLM9qyuicoeJ5DM8V1icsWKzGiaOria2hkzLg6dLe81ODPWJW9sQ/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt="img"></p>
+<a id="more"></a>
 <p>服务器3000 上的请求页面中包含如下 JavaScript 代码：</p>
 <blockquote>
 <p>$(function() {</p>

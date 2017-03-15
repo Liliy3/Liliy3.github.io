@@ -14,7 +14,7 @@
 <meta property="og:url" content="http://yoursite.com/2016/04/20/理解javascript原型/index.html">
 <meta property="og:site_name" content="生命不息，奋斗不止">
 <meta property="og:description" content="​    Javascript原型总会给人产生一些困惑，无论是经验丰富的专家，还是作者自己也时常表现出对这个概念某些有限的理解，我认为这样的困惑在我们一开始接触原型时就已经产生了，它们常常和new、constructor相关，特别是函数(function)的原型(prototype)属性(property)。事实上，原型是一种非常简单的概念。为了更好的理解它，我们应该首先记住这个原则，那就是忘记我">
-<meta property="og:updated_time" content="2017-03-15T12:58:36.574Z">
+<meta property="og:updated_time" content="2017-03-15T13:03:49.920Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="理解javascript原型">
 <meta name="twitter:description" content="​    Javascript原型总会给人产生一些困惑，无论是经验丰富的专家，还是作者自己也时常表现出对这个概念某些有限的理解，我认为这样的困惑在我们一开始接触原型时就已经产生了，它们常常和new、constructor相关，特别是函数(function)的原型(prototype)属性(property)。事实上，原型是一种非常简单的概念。为了更好的理解它，我们应该首先记住这个原则，那就是忘记我">
@@ -180,6 +180,7 @@
 <p>所有的对象在默认的情况下都有一个原型，因为原型本身也是对象，所以每个原型自身又有一个原型(只有一种例外，默认的对象原型在原型链的顶端。更多关于原型链的将在后面介绍)</p>
 <p><strong>好吧，再绕回来，那什么又是对象呢?</strong></p>
 <p>在javascript中，一个对象就是任何无序键值对的集合,如果它不是一个主数据类型(undefined，null，boolean，number，or string)，那它就是一个对象</p>
+<a id="more"></a>
 <p>你说每个对象都有一个原型，可是我当我写成({}).prototype 我得到了一个null，你说的不对吧？</p>
 <p>忘记你已经学到的关于原型属性的一切，它可能就是你对原型困惑的根源所在。一个对象的真正原型是被对象内部的[[Prototype]]属性(property)所持有。ECMA引入了标准对象原型访问器Object.getPrototype(object)，到目前为止只有Firefox和chrome实现了此访问器。除了IE，其他的浏览器支持非标准的访问器<strong>proto</strong>，如果这两者都不起作用的，我们需要从对象的构造函数中找到的它原型属性。下面的代码展示了获取对象原型的方法</p>
 <p>var a = {};</p>
