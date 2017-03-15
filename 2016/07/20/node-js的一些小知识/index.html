@@ -20,7 +20,7 @@ const weirdoString = name:Sophie;shape:fo">
 const weirdoString = name:Sophie;shape:fo">
 <meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib0vZALXibl3bLyFLgWHnXKvoU1EXKfQqaicvM7vX7UgeSs1vkxwWukNr2zywib04HqU0w2WRNvtZ4rYw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
 <meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib0vZALXibl3bLyFLgWHnXKvoGkU7l7AVxN27CTJOHslaXtEEHvjjVUS3wiaiaFFK8Of5df4zSLr9jOLg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
-<meta property="og:updated_time" content="2017-03-10T11:56:33.377Z">
+<meta property="og:updated_time" content="2017-03-15T12:31:26.778Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="node.js的一些小知识">
 <meta name="twitter:description" content="querystring:可以用作通用解析器的模块很多时候我们会从数据库或其他地方得到这种奇怪格式的字符串:name:Sophie;shape:fox;condition:new，一般来说我们会利用字符串切割的方式来讲字符串划分到JavaScript Object。不过querystring也是个不错的现成的工具:
@@ -192,6 +192,7 @@ const weirdoString = name:Sophie;shape:fo">
 <p>// };</p>
 </blockquote>
 <h1 id="V8-Inspector"><a href="#V8-Inspector" class="headerlink" title="V8 Inspector"></a>V8 Inspector</h1><p>以<code>--inspect</code>参数运行你的Node应用程序，它会反馈你某个URL。将该URL复制到Chrome中并打开，你就可以使用Chrome DevTools来调试你的Node应用程序啦。详细的实验可以参考这篇文章。不过需要注意的是，该参数仍然属于实验性质</p>
+<a id="more"></a>
 <p><img src="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib0vZALXibl3bLyFLgWHnXKvoU1EXKfQqaicvM7vX7UgeSs1vkxwWukNr2zywib04HqU0w2WRNvtZ4rYw/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt="img"></p>
 <h1 id="nextTick-与-setImmediate的区别"><a href="#nextTick-与-setImmediate的区别" class="headerlink" title="nextTick 与 setImmediate的区别"></a>nextTick 与 setImmediate的区别</h1><p>这两货的区别可能光从名字上还看不出来，我觉得应该给它们取个别名:</p>
 <ul>
@@ -565,6 +566,17 @@ res.on(`end`, () =&gt; resolve(data));
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">node.js</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
@@ -738,6 +750,26 @@ res.on(`end`, () =&gt; resolve(data));
             <input type="checkbox" q-on="click:toggleTag(e)" q-attr="checked:showTags">
           </label>
           <ul class="article-tag-list" q-show="showTags">
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">MVVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">闭包 作用域</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">node.js</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">闭包</a>
+              </li>
             
             <div class="clearfix"></div>
           </ul>

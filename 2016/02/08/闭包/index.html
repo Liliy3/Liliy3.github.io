@@ -20,7 +20,7 @@
 简言之，闭包是由函数引用其周边状态（词法环境）绑在一起形成的（封装）组合结构。在 JavaScript 中，闭包在每个函数被创建时形成。
 这是基本原理，但为什么我们关心这些？实际上，由于闭包与它的词法环境绑在一起，因此闭包让我们能够从一个函数内部访问其外部函数的作用域。
 要使用闭包，只需要简单地将一个函数定义在另一个函数内部，并将它暴露出来。要暴露一个函数，可以将它返回或者传给其他函">
-<meta property="og:updated_time" content="2017-03-10T11:52:16.469Z">
+<meta property="og:updated_time" content="2017-03-15T12:31:37.831Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="闭包">
 <meta name="twitter:description" content="什么是闭包？
@@ -187,6 +187,7 @@
 <p>内部函数将能够访问到外部函数作用域中的变量，即使外部函数已经执行完毕。</p>
 <p><strong>闭包使用的例子</strong></p>
 <p>闭包的用途之一是实现对象的私有数据。数据私有是让我们能够面向接口编程而不是面向实现编程的基础。而面向接口编程是一个重要的概念，有助于我们创建更加健壮的软件，因为实现细节比接口约定相对来说更加容易被改变。</p>
+<a id="more"></a>
 <blockquote>
 <p>“面向接口编程，别面向实现编程。” 设计模式：可复用面向对象软件的要素</p>
 </blockquote>
@@ -433,6 +434,17 @@ return function(){
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">闭包</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
@@ -601,6 +613,26 @@ return function(){
             <input type="checkbox" q-on="click:toggleTag(e)" q-attr="checked:showTags">
           </label>
           <ul class="article-tag-list" q-show="showTags">
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">MVVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">闭包 作用域</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">node.js</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">闭包</a>
+              </li>
             
             <div class="clearfix"></div>
           </ul>
