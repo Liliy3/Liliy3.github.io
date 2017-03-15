@@ -6,14 +6,18 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2017/4 | 生命不息，奋斗不止</title>
+  <title>理解javascript原型 | 生命不息，奋斗不止</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="生命不息，奋斗不止">
-<meta property="og:url" content="http://yoursite.com/archives/2017/04/index.html">
+  <meta name="description" content="​    Javascript原型总会给人产生一些困惑，无论是经验丰富的专家，还是作者自己也时常表现出对这个概念某些有限的理解，我认为这样的困惑在我们一开始接触原型时就已经产生了，它们常常和new、constructor相关，特别是函数(function)的原型(prototype)属性(property)。事实上，原型是一种非常简单的概念。为了更好的理解它，我们应该首先记住这个原则，那就是忘记我">
+<meta property="og:type" content="article">
+<meta property="og:title" content="理解javascript原型">
+<meta property="og:url" content="http://yoursite.com/2016/04/20/理解javascript原型/index.html">
 <meta property="og:site_name" content="生命不息，奋斗不止">
+<meta property="og:description" content="​    Javascript原型总会给人产生一些困惑，无论是经验丰富的专家，还是作者自己也时常表现出对这个概念某些有限的理解，我认为这样的困惑在我们一开始接触原型时就已经产生了，它们常常和new、constructor相关，特别是函数(function)的原型(prototype)属性(property)。事实上，原型是一种非常简单的概念。为了更好的理解它，我们应该首先记住这个原则，那就是忘记我">
+<meta property="og:updated_time" content="2017-03-15T12:58:36.574Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="生命不息，奋斗不止">
+<meta name="twitter:title" content="理解javascript原型">
+<meta name="twitter:description" content="​    Javascript原型总会给人产生一些困惑，无论是经验丰富的专家，还是作者自己也时常表现出对这个概念某些有限的理解，我认为这样的困惑在我们一开始接触原型时就已经产生了，它们常常和new、constructor相关，特别是函数(function)的原型(prototype)属性(property)。事实上，原型是一种非常简单的概念。为了更好的理解它，我们应该首先记住这个原则，那就是忘记我">
   
     <link rel="alternative" href="/atom.xml" title="生命不息，奋斗不止" type="application/atom+xml">
   
@@ -147,36 +151,248 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-理解javascript原型" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/04/20/理解javascript原型/" class="archive-article-date">
-  	<time datetime="2017-04-20T12:32:10.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-20</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/04/20/理解javascript原型/">理解javascript原型</a>
+    <h1 class="article-title" itemprop="name">
+      理解javascript原型
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2016/04/20/理解javascript原型/" class="archive-article-date">
+  	<time datetime="2016-04-20T12:32:10.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-04-20</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>​    Javascript原型总会给人产生一些困惑，无论是经验丰富的专家，还是作者自己也时常表现出对这个概念某些有限的理解，我认为这样的困惑在我们一开始接触原型时就已经产生了，它们常常和new、constructor相关，特别是函数(function)的原型(prototype)属性(property)。事实上，原型是一种非常简单的概念。为了更好的理解它，我们应该首先记住这个原则，那就是忘记我们已经学到的关于构造原型(construtor prototypes)的认识。</p>
+<p><strong>什么是原型？</strong></p>
+<p>原型是一个对象，其他对象可以通过它实现属性继承。</p>
+<p><strong>任何一个对象都可以成为原型么？</strong></p>
+<p>是</p>
+<p><strong>哪些对象有原型</strong></p>
+<p>所有的对象在默认的情况下都有一个原型，因为原型本身也是对象，所以每个原型自身又有一个原型(只有一种例外，默认的对象原型在原型链的顶端。更多关于原型链的将在后面介绍)</p>
+<p><strong>好吧，再绕回来，那什么又是对象呢?</strong></p>
+<p>在javascript中，一个对象就是任何无序键值对的集合,如果它不是一个主数据类型(undefined，null，boolean，number，or string)，那它就是一个对象</p>
+<p>你说每个对象都有一个原型，可是我当我写成({}).prototype 我得到了一个null，你说的不对吧？</p>
+<p>忘记你已经学到的关于原型属性的一切，它可能就是你对原型困惑的根源所在。一个对象的真正原型是被对象内部的[[Prototype]]属性(property)所持有。ECMA引入了标准对象原型访问器Object.getPrototype(object)，到目前为止只有Firefox和chrome实现了此访问器。除了IE，其他的浏览器支持非标准的访问器<strong>proto</strong>，如果这两者都不起作用的，我们需要从对象的构造函数中找到的它原型属性。下面的代码展示了获取对象原型的方法</p>
+<p>var a = {};</p>
+<blockquote>
+<p> //Firefox 3.6 and Chrome 5</p>
+<p> Object.getPrototypeOf(a); //[object Object]  </p>
+<p> //Firefox 3.6, Chrome 5 and Safari 4</p>
+<p>a.<strong>proto</strong>; //[object Object]  </p>
+<p> //all browsers</p>
+<p> a.constructor.prototype; //[object Object]</p>
+</blockquote>
+<p>ok，一切都进行的很好，但是false明明是一个主数据类型，可是false.<strong>proto</strong>却返回了一个值</p>
+<p>当你试图获取一个主数据类型的原型时，它被强制转化成了一个对象</p>
+<blockquote>
+<p>//(works in IE too, but only by accident)</p>
+<p>false.<strong>proto</strong> === Boolean(false).<strong>proto</strong>; //true</p>
+</blockquote>
+<p><strong>我想在继承中使用原型，那我该怎么做？</strong></p>
+<p>如果仅仅只是因为一个实例而使用原型是没有多大意义的，这和直接添加属性到这个实例是一样的，假如我们已经创建了一个实例对象 ，我们想要继承一个已经存在的对象的功能比如说Array，我们可以像下面这样做( 在支持<strong>proto</strong> 的浏览器中)</p>
+<blockquote>
+<p>//unusual case and does not work in IE</p>
+<p>var a = {};</p>
+<p>a.<strong>proto</strong> = Array.prototype;</p>
+<p>a.length; //0</p>
+</blockquote>
+<hr>
+<p> 译者注:上面这个例子中，首先创建了一个对象a，然后通过a的原型来达到继承Array 这个已经存在的对象的功能</p>
+<hr>
+<p>原型真正魅力体现在多个实例共用一个通用原型的时候。原型对象(注:也就是某个对象的原型所引用的对象)的属性一旦定义，就可以被多个引用它的实例所继承(注:即这些实例对象的原型所指向的就是这个原型对象)，这种操作在性能和维护方面其意义是不言自明的</p>
+<p><strong>这也是构造函数的存在的原因么?</strong></p>
+<p>是的。构造函数提供了一种方便的跨浏览器机制，这种机制允许在创建实例时为实例提供一个通用的原型</p>
+<p><strong>在你能够提供一个例子之前，我需要知道constructor.prototype 属性究竟是什么？</strong></p>
+<p>首先，javascript并没有在构造函数(constructor)和其他函数之间做区分，所以说每个函数都有一个原型属性。反过来，如果不是函数，将不会有这样一个属性。请看下面的代码</p>
+<blockquote>
+<p>//function will never be a constructor but it has a prototype property anyway</p>
+<p>Math.max.prototype; //[object Object]</p>
+<p>//function intended to be a constructor has a prototype too</p>
+<p>var A = function(name) {</p>
+<pre><code>this.name = name;
+</code></pre><p>}</p>
+<p> A.prototype; //[object Object]   </p>
+<p> //Math is not a function so no prototype property</p>
+<p> Math.prototype; //null</p>
+</blockquote>
+<p>现在我们可以下个定义了：函数A的原型属性(prototype property )是一个对象，当这个函数被用作构造函数来创建实例时，该函数的原型属性将被作为原型赋值给所有对象实例(注:即所有实例的原型引用的是函数的原型属性)</p>
+<hr>
+<p>译者注:以下的代码更详细的说明这一切</p>
+<blockquote>
+<p>//创建一个函数b</p>
+<p>var b = function(){ var one; }</p>
+<p>//使用b创建一个对象实例c</p>
+<p>var c = new b();</p>
+<p>//查看b 和c的构造函数</p>
+<p>b.constructor;  // function Function() { [native code]}</p>
+<p>b.constructor==Function.constructor; //true</p>
+<p>c.constructor; //实例c的构造函数 即 b function(){ var one; }</p>
+<p>c.constructor==b //true</p>
+<p>//b是一个函数，查看b的原型如下</p>
+<p>b.constructor.prototype // function (){}</p>
+<p>b.<strong>proto</strong>  //function (){}</p>
+<p>//b是一个函数，由于javascript没有在构造函数constructor和函数function之间做区分，所以函数像constructor一样，</p>
+<p>//有一个原型属性，这和函数的原型(b.<strong>proto</strong> 或者b.construtor.prototype)是不一样的</p>
+<p>b.prototype //[object Object]   函数b的原型属性</p>
+<p>b.prototype==b.constructor.prototype //fasle</p>
+<p>b.prototype==b.<strong>proto</strong>  //false</p>
+<p>b.<strong>proto</strong>==b.constructor.prototype //true</p>
+<p>//c是一个由b创建的对象实例，查看c的原型如下</p>
+<p>c.constructor.prototype //[object Object] 这是对象的原型</p>
+<p>c.<strong>proto</strong> //[object Object] 这是对象的原型</p>
+<p>c.constructor.prototype==b.constructor.prototype;  //false  c的原型和b的原型比较</p>
+<p>c.constructor.prototype==b.prototype;  //true c的原型和b的原型属性比较</p>
+<p>//为函数b的原型属性添加一个属性max</p>
+<p>b.prototype.max = 3</p>
+<p>//实例c也有了一个属性max</p>
+<p>c.max  //3</p>
+</blockquote>
+<p>上面的例子中，对象实例c的原型和函数的b的原型属性是一样的，如果改变b的原型属性，则对象实例c</p>
+<p>的原型也会改变</p>
+<p>理解一个函数的原型属性(function’s prototype property )其实和实际的原型(prototype)没有关系对我们来说至关重要</p>
+<blockquote>
+<p>//(example fails in IE)</p>
+<p> var A = function(name) {</p>
+<p>  this.name = name;</p>
+<p>}</p>
+<p>A.prototype == A.<strong>proto</strong>; //false</p>
+<p> A.<strong>proto</strong> == Function.prototype; //true - A’s prototype is set to its constructor’s prototype property</p>
+</blockquote>
+<p>给个例子撒</p>
+<p>你可能曾经上百次的像这样使用javascript，现在当你再次看到这样的代码的时候，你或许会有不同的理解。</p>
+<blockquote>
+<p>//Constructor. <em>this</em> is returned as new object and its internal [[prototype]] property will be set to the constructor’s default prototype property</p>
+<p>var Circle = function(radius) {</p>
+<pre><code>this.radius = radius;
+
+//next line is implicit, added for illustration only
+
+//this.__proto__ = Circle.prototype;
+</code></pre><p> }    </p>
+<p>//augment Circle’s default prototype property thereby augmenting the prototype of each generated instance</p>
+<p>Circle.prototype.area = function() {</p>
+<pre><code>return Math.PI*this.radius*this.radius;
+</code></pre><p> }   </p>
+<p> //create two instances of a circle and make each leverage the common prototype</p>
+<p>var a = new Circle(3), b = new Circle(4);</p>
+<p> a.area().toFixed(2); //28.27</p>
+<p> b.area().toFixed(2); //50.27</p>
+</blockquote>
+<p>棒极了。如果我更改了构造函数的原型，是否意味着已经存在的该构造函数的实例将获得构造函数的最新版本？</p>
+<p>不一定。如果修改的是原型属性，那么这样的改变将会发生。因为在a实际被创建之后，a.<strong>proto</strong>是一个对A.prototype 的一个引用，。</p>
+<blockquote>
+<p>var A = function(name) {</p>
+<pre><code>this.name = name;
+</code></pre><p> }   </p>
+<p>var a = new A(‘alpha’);</p>
+<p>a.name; //‘alpha’   </p>
+<p> A.prototype.x = 23;   </p>
+<p>a.x; //23</p>
+</blockquote>
+<hr>
+<p>译者注:这个和上例中的一样，实例对象a的原型(a.<strong>proto</strong>)是对函数A的原型属性(A.prototype)的引用，所以如果修改的是A的原型属性，</p>
+<p>改变将影响由A创建的对象实例a 在下面的例子中，但是对函数A的原型进行了修改，但是并没有反应到A所创建的实例a中</p>
+<blockquote>
+<p>var A = function(name)</p>
+<p>{</p>
+<p>this.name = name;</p>
+<p>}</p>
+<p>var a = new A(‘alpha’);</p>
+<p>a.name; //’alpha’</p>
+<p>A.<strong>proto</strong>.max = 19880716;</p>
+<p>a.max   //undefined</p>
+</blockquote>
+<p>但是如果我现在替换A的原型属性为一个新的对象，实例对象的原型a.<strong>proto</strong>却仍然引用着原来它被创建时A的原型属性</p>
+<blockquote>
+<p>var A = function(name) {</p>
+<pre><code>this.name = name;
+</code></pre><p>}  </p>
+<p> var a = new A(‘alpha’);</p>
+<p>a.name; //‘alpha’   </p>
+<p> A.prototype = {x:23};    </p>
+<p> a.x; //null</p>
+</blockquote>
+<p>译者注：即如果在实例被创建之后，改变了函数的原型属性所指向的对象，也就是改变了创建实例时实例原型所指向的对象</p>
+<p>但是这并不会影响已经创建的实例的原型。</p>
+<p>一个默认的原型是什么样子的？</p>
+<blockquote>
+<p>var A = function() {};</p>
+<p>A.prototype.constructor == A; //true</p>
+<p>var a = new A();</p>
+<p>a.constructor == A; //true (a’s constructor property inherited from it’s prototype)</p>
+</blockquote>
+<p><strong>instance of 和原型有什么关系</strong></p>
+<p>如果a的原型属于A的原型链，表达式 a instance of A 值为true。这意味着 我们可以对instance of 耍个诡计让它不在起作用</p>
+<blockquote>
+<p>var A = function() {}   </p>
+<p> var a = new A();</p>
+<p> a.<strong>proto</strong> == A.prototype; //true - so instanceof A will return true</p>
+<p> a instanceof A; //true;   </p>
+<p>//mess around with a’s prototype</p>
+<p> a.<strong>proto</strong> = Function.prototype;</p>
+<p> //a’s prototype no longer in same prototype chain as A’s prototype property</p>
+<p> a instanceof A; //false</p>
+</blockquote>
+<p>还能使用原型做些什么呢?</p>
+<p>记住我曾经所提到过的每个构造函数都有一个原型属性，它用来为每一个它所创建的实例提供原型。这同样也适用原生态的构造函数Function,String等，扩展这个属性，我们可以达到扩展指定构造函数的所有实例</p>
+<p>我曾经在之前的很多文章中使用过这个技巧来演示函数的拓展。在tracer utility 这篇文章中所有的string实例都实现了times这个方法，对字符串本身进行指定数目的复制</p>
+<blockquote>
+<p>String.prototype.times = function(count) {</p>
+<pre><code>return count &lt; 1 ? &apos;&apos; : new Array(count + 1).join(this);
+</code></pre><p> }</p>
+<p>“hello!”.times(3); //“hello!hello!hello!”;</p>
+<p>“please…”.times(6);//“please…please…please…please…please…please…”</p>
+</blockquote>
+<p><strong>告诉我继承是怎样通过原型来工作的。什么是原型链?</strong></p>
+<p>因为每个对象和原型都有一个原型(注:原型也是一个对象)，对象的原型指向对象的父，而父的原型又指向父的父，我们把这种通过原型层层连接起来的关系撑为原型链。这条链的末端一般总是默认的对象原型。</p>
+<blockquote>
+<p>a.<strong>proto</strong> = b;</p>
+<p> b.<strong>proto</strong> = c;</p>
+<p> c.<strong>proto</strong> = {}; //default object</p>
+<p>{}.<strong>proto</strong>.<strong>proto</strong>; //null</p>
+</blockquote>
+<p>原型的继承机制是发生在内部且是隐式的.当想要获得一个对象a的属性foo的值，javascript会在原型链中查找foo的存在，如果找到则返回foo的值，否则undefined被返回。</p>
+<p><strong>赋值呢？</strong></p>
+<p>原型的继承 is not a player 当属性值被设置成a.foo=’bar’是直接给a的属性foo设置了一个值bar。为了把一个属性添加到原型中，你需要直接指定该原型。</p>
+<p>以上就是这篇文章所要讲述的。我个人感觉自己对原型概念的理解还是比较深刻的，但我的观点并不能代表一切。如有纰漏和异议，敬请告知。</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -188,19 +404,97 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2016/04/20/理解javascript原型/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2016/05/18/原生JS/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          原生JS
+        
+      </div>
+    </a>
   
   
-    </div></section>
+    <a href="/2016/03/18/详细图解作用域链与闭包/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">详细图解作用域链与闭包</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+
+
+  
+    <div class="duoshuo"></div>
   
 
-    
+
 
 
           </div>
@@ -223,8 +517,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
