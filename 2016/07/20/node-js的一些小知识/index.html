@@ -55,7 +55,7 @@ const weirdoString = name:Sophie;shape:fo">
 <div class="intrude-less">
 	<header id="header" class="inner">
 		<a href="/" class="profilepic">
-			<img src="https://github.com/Liliy3/Liliy3.github.io/blob/master/img/2016.jpg" class="js-avatar">
+			<img src="/blob/master/img/2016.jpg" class="js-avatar">
 		</a>
 		<hgroup>
 		  <h1 class="header-author"><a href="/">Lili</a></h1>
@@ -77,8 +77,6 @@ const weirdoString = name:Sophie;shape:fo">
     			<a q-on="click: openSlider(e, 'innerArchive')" href="javascript:void(0)">所有文章</a>
     			
             
-    			
-    			<a q-on="click: openSlider(e, 'friends')" href="javascript:void(0)">友链</a>
     			
             
     			
@@ -113,7 +111,7 @@ const weirdoString = name:Sophie;shape:fo">
 	<div class="intrude-less">
 		<header id="header" class="inner">
 			<div class="profilepic">
-				<img src="https://github.com/Liliy3/Liliy3.github.io/blob/master/img/2016.jpg" class="js-avatar">
+				<img src="/blob/master/img/2016.jpg" class="js-avatar">
 			</div>
 			<hgroup>
 			  <h1 class="header-author js-header-author">Lili</h1>
@@ -704,8 +702,6 @@ res.on(`end`, () =&gt; resolve(data));
       
     
       
-      
-      
     
       
       
@@ -717,15 +713,13 @@ res.on(`end`, () =&gt; resolve(data));
     
     
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'innerArchive')"><a href="javascript:void(0)" q-class="active:innerArchive">所有文章</a></li>
+      <li style="width: 50%" q-on="click: openSlider(e, 'innerArchive')"><a href="javascript:void(0)" q-class="active:innerArchive">所有文章</a></li>
       
         
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'friends')"><a href="javascript:void(0)" q-class="active:friends">友链</a></li>
-      
         
       
-      <li style="width: 33.333333333333336%" q-on="click: openSlider(e, 'aboutme')"><a href="javascript:void(0)" q-class="active:aboutme">关于我</a></li>
+      <li style="width: 50%" q-on="click: openSlider(e, 'aboutme')"><a href="javascript:void(0)" q-class="active:aboutme">关于我</a></li>
       
         
     </ul>
@@ -788,10 +782,6 @@ res.on(`end`, () =&gt; resolve(data));
     	</section>
     
 
-    
-    	<section class="tools-section tools-section-friends" q-show="friends">
-  		
-    	</section>
     
 
     
