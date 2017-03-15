@@ -6,27 +6,18 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>node.js的一些小知识 | 生命不息，奋斗不止</title>
+  <title>理解javascript原型 | 生命不息，奋斗不止</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="querystring:可以用作通用解析器的模块很多时候我们会从数据库或其他地方得到这种奇怪格式的字符串:name:Sophie;shape:fox;condition:new，一般来说我们会利用字符串切割的方式来讲字符串划分到JavaScript Object。不过querystring也是个不错的现成的工具:
-
-const weirdoString = name:Sophie;shape:fo">
+  <meta name="description" content="​    Javascript原型总会给人产生一些困惑，无论是经验丰富的专家，还是作者自己也时常表现出对这个概念某些有限的理解，我认为这样的困惑在我们一开始接触原型时就已经产生了，它们常常和new、constructor相关，特别是函数(function)的原型(prototype)属性(property)。事实上，原型是一种非常简单的概念。为了更好的理解它，我们应该首先记住这个原则，那就是忘记我">
 <meta property="og:type" content="article">
-<meta property="og:title" content="node.js的一些小知识">
-<meta property="og:url" content="http://yoursite.com/2016/07/20/node-js的一些小知识/index.html">
+<meta property="og:title" content="理解javascript原型">
+<meta property="og:url" content="http://yoursite.com/2017/04/20/理解javascript原型/index.html">
 <meta property="og:site_name" content="生命不息，奋斗不止">
-<meta property="og:description" content="querystring:可以用作通用解析器的模块很多时候我们会从数据库或其他地方得到这种奇怪格式的字符串:name:Sophie;shape:fox;condition:new，一般来说我们会利用字符串切割的方式来讲字符串划分到JavaScript Object。不过querystring也是个不错的现成的工具:
-
-const weirdoString = name:Sophie;shape:fo">
-<meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib0vZALXibl3bLyFLgWHnXKvoU1EXKfQqaicvM7vX7UgeSs1vkxwWukNr2zywib04HqU0w2WRNvtZ4rYw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
-<meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib0vZALXibl3bLyFLgWHnXKvoGkU7l7AVxN27CTJOHslaXtEEHvjjVUS3wiaiaFFK8Of5df4zSLr9jOLg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
-<meta property="og:updated_time" content="2017-03-15T12:31:26.778Z">
+<meta property="og:description" content="​    Javascript原型总会给人产生一些困惑，无论是经验丰富的专家，还是作者自己也时常表现出对这个概念某些有限的理解，我认为这样的困惑在我们一开始接触原型时就已经产生了，它们常常和new、constructor相关，特别是函数(function)的原型(prototype)属性(property)。事实上，原型是一种非常简单的概念。为了更好的理解它，我们应该首先记住这个原则，那就是忘记我">
+<meta property="og:updated_time" content="2017-03-15T12:54:09.239Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="node.js的一些小知识">
-<meta name="twitter:description" content="querystring:可以用作通用解析器的模块很多时候我们会从数据库或其他地方得到这种奇怪格式的字符串:name:Sophie;shape:fox;condition:new，一般来说我们会利用字符串切割的方式来讲字符串划分到JavaScript Object。不过querystring也是个不错的现成的工具:
-
-const weirdoString = name:Sophie;shape:fo">
-<meta name="twitter:image" content="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib0vZALXibl3bLyFLgWHnXKvoU1EXKfQqaicvM7vX7UgeSs1vkxwWukNr2zywib04HqU0w2WRNvtZ4rYw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
+<meta name="twitter:title" content="理解javascript原型">
+<meta name="twitter:description" content="​    Javascript原型总会给人产生一些困惑，无论是经验丰富的专家，还是作者自己也时常表现出对这个概念某些有限的理解，我认为这样的困惑在我们一开始接触原型时就已经产生了，它们常常和new、constructor相关，特别是函数(function)的原型(prototype)属性(property)。事实上，原型是一种非常简单的概念。为了更好的理解它，我们应该首先记住这个原则，那就是忘记我">
   
     <link rel="alternative" href="/atom.xml" title="生命不息，奋斗不止" type="application/atom+xml">
   
@@ -160,383 +151,219 @@ const weirdoString = name:Sophie;shape:fo">
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-node-js的一些小知识" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-理解javascript原型" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      node.js的一些小知识
+      理解javascript原型
     </h1>
   
 
         
-        <a href="/2016/07/20/node-js的一些小知识/" class="archive-article-date">
-  	<time datetime="2016-07-20T12:54:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-07-20</time>
+        <a href="/2017/04/20/理解javascript原型/" class="archive-article-date">
+  	<time datetime="2017-04-20T12:32:10.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-20</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="querystring-可以用作通用解析器的模块"><a href="#querystring-可以用作通用解析器的模块" class="headerlink" title="querystring:可以用作通用解析器的模块"></a>querystring:可以用作通用解析器的模块</h1><p>很多时候我们会从数据库或其他地方得到这种奇怪格式的字符串:<code>name:Sophie;shape:fox;condition:new</code>，一般来说我们会利用字符串切割的方式来讲字符串划分到JavaScript Object。不过<code>querystring</code>也是个不错的现成的工具:</p>
+        <p>​    Javascript原型总会给人产生一些困惑，无论是经验丰富的专家，还是作者自己也时常表现出对这个概念某些有限的理解，我认为这样的困惑在我们一开始接触原型时就已经产生了，它们常常和new、constructor相关，特别是函数(function)的原型(prototype)属性(property)。事实上，原型是一种非常简单的概念。为了更好的理解它，我们应该首先记住这个原则，那就是忘记我们已经学到的关于构造原型(construtor prototypes)的认识。</p>
+<p><strong>什么是原型？</strong></p>
+<p>原型是一个对象，其他对象可以通过它实现属性继承。</p>
+<p><strong>任何一个对象都可以成为原型么？</strong></p>
+<p>是</p>
+<p><strong>哪些对象有原型</strong></p>
+<p>所有的对象在默认的情况下都有一个原型，因为原型本身也是对象，所以每个原型自身又有一个原型(只有一种例外，默认的对象原型在原型链的顶端。更多关于原型链的将在后面介绍)</p>
+<p><strong>好吧，再绕回来，那什么又是对象呢?</strong></p>
+<p>在javascript中，一个对象就是任何无序键值对的集合,如果它不是一个主数据类型(undefined，null，boolean，number，or string)，那它就是一个对象</p>
+<p>你说每个对象都有一个原型，可是我当我写成({}).prototype 我得到了一个null，你说的不对吧？</p>
+<p>忘记你已经学到的关于原型属性的一切，它可能就是你对原型困惑的根源所在。一个对象的真正原型是被对象内部的[[Prototype]]属性(property)所持有。ECMA引入了标准对象原型访问器Object.getPrototype(object)，到目前为止只有Firefox和chrome实现了此访问器。除了IE，其他的浏览器支持非标准的访问器<strong>proto</strong>，如果这两者都不起作用的，我们需要从对象的构造函数中找到的它原型属性。下面的代码展示了获取对象原型的方法</p>
+<p>var a = {};</p>
 <blockquote>
-<p>const weirdoString = <code>name:Sophie;shape:fox;condition:new</code>;</p>
-<p>const result = querystring.parse(weirdoString, <code>;</code>, <code>:</code>);</p>
-<p>// result:</p>
-<p>// {</p>
-<p>//   name: <code>Sophie</code>,</p>
-<p>//   shape: <code>fox</code>,</p>
-<p>//   condition: <code>new</code>,</p>
-<p>// };</p>
+<p> //Firefox 3.6 and Chrome 5</p>
+<p> Object.getPrototypeOf(a); //[object Object]  </p>
+<p> //Firefox 3.6, Chrome 5 and Safari 4</p>
+<p>a.<strong>proto</strong>; //[object Object]  </p>
+<p> //all browsers</p>
+<p> a.constructor.prototype; //[object Object]</p>
 </blockquote>
-<h1 id="V8-Inspector"><a href="#V8-Inspector" class="headerlink" title="V8 Inspector"></a>V8 Inspector</h1><p>以<code>--inspect</code>参数运行你的Node应用程序，它会反馈你某个URL。将该URL复制到Chrome中并打开，你就可以使用Chrome DevTools来调试你的Node应用程序啦。详细的实验可以参考这篇文章。不过需要注意的是，该参数仍然属于实验性质</p>
-<a id="more"></a>
-<p><img src="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib0vZALXibl3bLyFLgWHnXKvoU1EXKfQqaicvM7vX7UgeSs1vkxwWukNr2zywib04HqU0w2WRNvtZ4rYw/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt="img"></p>
-<h1 id="nextTick-与-setImmediate的区别"><a href="#nextTick-与-setImmediate的区别" class="headerlink" title="nextTick 与 setImmediate的区别"></a>nextTick 与 setImmediate的区别</h1><p>这两货的区别可能光从名字上还看不出来，我觉得应该给它们取个别名:</p>
-<ul>
-<li><code>process.nextTick()</code>应该为<code>process.sendThisToTheStartOfTheQueue()</code></li>
-<li><code>setImmediate</code>应该为<code>sendThisToTheEndOfTheQueue()</code></li>
-</ul>
-<p>再说句不相关的，React中的Props应该为<code>stuffThatShouldStayTheSameIfTheUserRefreshes</code>，而State应该为<code>stuffThatShouldBeForgottenIfTheUserRefreshes</code>。</p>
-<h1 id="Server-listen-可以使用Object作为参数"><a href="#Server-listen-可以使用Object作为参数" class="headerlink" title="Server.listen 可以使用Object作为参数"></a>Server.listen 可以使用Object作为参数</h1><p>我更喜欢命名参数的方式调用函数，这样相较于仅按照顺序的无命名参数法会更直观。别忘了Server.listen也可以使用某个Object作为参数:</p>
+<p>ok，一切都进行的很好，但是false明明是一个主数据类型，可是false.<strong>proto</strong>却返回了一个值</p>
+<p>当你试图获取一个主数据类型的原型时，它被强制转化成了一个对象</p>
 <blockquote>
-<p>require(<code>http</code>)</p>
-<p>  .createServer()</p>
-<p>  .listen({</p>
-<pre><code>port: 8080,
-
-host: `localhost`,
-</code></pre><p>  })</p>
-<p>  .on(<code>request</code>, (req, res) =&gt; {</p>
-<pre><code>res.end(`Hello World!`);
-</code></pre><p>  });</p>
+<p>//(works in IE too, but only by accident)</p>
+<p>false.<strong>proto</strong> === Boolean(false).<strong>proto</strong>; //true</p>
 </blockquote>
-<p>不过这个特性不是表述在http.Server这个API中，而是在其父级net.Server的文档中。</p>
-<h1 id="相对地址"><a href="#相对地址" class="headerlink" title="相对地址"></a>相对地址</h1><p>你传入<code>fs</code>模块的距离可以是相对地址，即相对于<code>process.cwd()</code>。估计有些人早就知道了，不过我之前一直以为是只能使用绝对地址:</p>
+<p><strong>我想在继承中使用原型，那我该怎么做？</strong></p>
+<p>如果仅仅只是因为一个实例而使用原型是没有多大意义的，这和直接添加属性到这个实例是一样的，假如我们已经创建了一个实例对象 ，我们想要继承一个已经存在的对象的功能比如说Array，我们可以像下面这样做( 在支持<strong>proto</strong> 的浏览器中)</p>
 <blockquote>
-<p>const fs = require(<code>fs</code>);</p>
-<p>const path = require(<code>path</code>);</p>
-<p>// why have I always done this…</p>
-<p>fs.readFile(path.join(__dirname, <code>myFile.txt</code>), (err, data) =&gt; {</p>
-<p>  // do something</p>
-<p>});</p>
-<p>// when I could just do this?</p>
-<p>fs.readFile(<code>./path/to/myFile.txt</code>, (err, data) =&gt; {</p>
-<p>  // do something</p>
-<p>});</p>
+<p>//unusual case and does not work in IE</p>
+<p>var a = {};</p>
+<p>a.<strong>proto</strong> = Array.prototype;</p>
+<p>a.length; //0</p>
 </blockquote>
-<h1 id="Path-Parsing-路径解析"><a href="#Path-Parsing-路径解析" class="headerlink" title="Path Parsing:路径解析"></a>Path Parsing:路径解析</h1><p>之前我一直不知道的某个功能就是从某个文件名中解析出路径，文件名，文件扩展等等:</p>
+<hr>
+<p> 译者注:上面这个例子中，首先创建了一个对象a，然后通过a的原型来达到继承Array 这个已经存在的对象的功能</p>
+<hr>
+<p>原型真正魅力体现在多个实例共用一个通用原型的时候。原型对象(注:也就是某个对象的原型所引用的对象)的属性一旦定义，就可以被多个引用它的实例所继承(注:即这些实例对象的原型所指向的就是这个原型对象)，这种操作在性能和维护方面其意义是不言自明的</p>
+<p><strong>这也是构造函数的存在的原因么?</strong></p>
+<p>是的。构造函数提供了一种方便的跨浏览器机制，这种机制允许在创建实例时为实例提供一个通用的原型</p>
+<p><strong>在你能够提供一个例子之前，我需要知道constructor.prototype 属性究竟是什么？</strong></p>
+<p>首先，javascript并没有在构造函数(constructor)和其他函数之间做区分，所以说每个函数都有一个原型属性。反过来，如果不是函数，将不会有这样一个属性。请看下面的代码</p>
 <blockquote>
-<p>myFilePath = <code>/someDir/someFile.json</code>;</p>
-<p>path.parse(myFilePath).base === <code>someFile.json</code>; // true</p>
-<p>path.parse(myFilePath).name === <code>someFile</code>; // true</p>
-<p>path.parse(myFilePath).ext === <code>.json</code>; // true</p>
+<p>//function will never be a constructor but it has a prototype property anyway</p>
+<p>Math.max.prototype; //[object Object]</p>
+<p>//function intended to be a constructor has a prototype too</p>
+<p>var A = function(name) {</p>
+<pre><code>this.name = name;
+</code></pre><p>}</p>
+<p> A.prototype; //[object Object]   </p>
+<p> //Math is not a function so no prototype property</p>
+<p> Math.prototype; //null</p>
 </blockquote>
-<h1 id="Logging-with-colors"><a href="#Logging-with-colors" class="headerlink" title="Logging with colors"></a>Logging with colors</h1><p>别忘了<code>console.dir(obj,{colors:true})</code>能够以不同的色彩打印出键与值，这一点会大大增加日志的可读性。</p>
-<h1 id="使用setInterval执行定时任务"><a href="#使用setInterval执行定时任务" class="headerlink" title="使用setInterval执行定时任务"></a>使用setInterval执行定时任务</h1><p>我喜欢使用<code>setInterval</code>来定期执行数据库清理任务，不过默认情况下在存在<code>setInterval</code>的时候NodeJS并不会退出，你可以使用如下的方法让Node沉睡:</p>
+<p>现在我们可以下个定义了：函数A的原型属性(prototype property )是一个对象，当这个函数被用作构造函数来创建实例时，该函数的原型属性将被作为原型赋值给所有对象实例(注:即所有实例的原型引用的是函数的原型属性)</p>
+<hr>
+<p>译者注:以下的代码更详细的说明这一切</p>
 <blockquote>
-<p>const dailyCleanup = setInterval(() =&gt; {</p>
-<p>  cleanup();</p>
-<p>}, 1000 <em> 60 </em> 60 * 24);</p>
-<p>dailyCleanup.unref();</p>
+<p>//创建一个函数b</p>
+<p>var b = function(){ var one; }</p>
+<p>//使用b创建一个对象实例c</p>
+<p>var c = new b();</p>
+<p>//查看b 和c的构造函数</p>
+<p>b.constructor;  // function Function() { [native code]}</p>
+<p>b.constructor==Function.constructor; //true</p>
+<p>c.constructor; //实例c的构造函数 即 b function(){ var one; }</p>
+<p>c.constructor==b //true</p>
+<p>//b是一个函数，查看b的原型如下</p>
+<p>b.constructor.prototype // function (){}</p>
+<p>b.<strong>proto</strong>  //function (){}</p>
+<p>//b是一个函数，由于javascript没有在构造函数constructor和函数function之间做区分，所以函数像constructor一样，</p>
+<p>//有一个原型属性，这和函数的原型(b.<strong>proto</strong> 或者b.construtor.prototype)是不一样的</p>
+<p>b.prototype //[object Object]   函数b的原型属性</p>
+<p>b.prototype==b.constructor.prototype //fasle</p>
+<p>b.prototype==b.<strong>proto</strong>  //false</p>
+<p>b.<strong>proto</strong>==b.constructor.prototype //true</p>
+<p>//c是一个由b创建的对象实例，查看c的原型如下</p>
+<p>c.constructor.prototype //[object Object] 这是对象的原型</p>
+<p>c.<strong>proto</strong> //[object Object] 这是对象的原型</p>
+<p>c.constructor.prototype==b.constructor.prototype;  //false  c的原型和b的原型比较</p>
+<p>c.constructor.prototype==b.prototype;  //true c的原型和b的原型属性比较</p>
+<p>//为函数b的原型属性添加一个属性max</p>
+<p>b.prototype.max = 3</p>
+<p>//实例c也有了一个属性max</p>
+<p>c.max  //3</p>
 </blockquote>
-<h1 id="Use-Signal-Constants"><a href="#Use-Signal-Constants" class="headerlink" title="Use Signal Constants"></a>Use Signal Constants</h1><p>如果你尝试在NodeJS中杀死某个进程，估计你用过如下语法:</p>
+<p>上面的例子中，对象实例c的原型和函数的b的原型属性是一样的，如果改变b的原型属性，则对象实例c</p>
+<p>的原型也会改变</p>
+<p>理解一个函数的原型属性(function’s prototype property )其实和实际的原型(prototype)没有关系对我们来说至关重要</p>
 <blockquote>
-<p>process.kill(process.pid, <code>SIGTERM</code>);</p>
-</blockquote>
-<p>这个没啥问题，不过既然第二个参数同时能够使用字符串与整形变量，那么还不如使用全局变量呢:</p>
-<blockquote>
-<p>process.kill(process.pid, os.constants.signals.SIGTERM);</p>
-</blockquote>
-<h1 id="IP-Address-Validation"><a href="#IP-Address-Validation" class="headerlink" title="IP Address Validation"></a>IP Address Validation</h1><p>NodeJS中含有内置的IP地址校验工具，这一点可以免得你写额外的正则表达式:</p>
-<blockquote>
-<p>require(<code>net</code>).isIP(<code>10.0.0.1</code>) 返回 4</p>
-<p>require(<code>net</code>).isIP(<code>cats</code>) 返回 0</p>
-</blockquote>
-<h1 id="os-EOF"><a href="#os-EOF" class="headerlink" title="os.EOF"></a>os.EOF</h1><p>不知道你有没有手写过行结束符，看上去可不漂亮啊。NodeJS内置了<code>os.EOF</code>，其在Windows下是<code>rn</code>，其他地方是<code>n</code>，使用os.EOL能够让你的代码在不同的操作系统上保证一致性:</p>
-<blockquote>
-<p>const fs = require(<code>fs</code>);</p>
-<p>// bad</p>
-<p>fs.readFile(<code>./myFile.txt</code>, <code>utf8</code>, (err, data) =&gt; {</p>
-<p>  data.split(<code>\r\n</code>).forEach(line =&gt; {</p>
-<pre><code>// do something
-</code></pre><p>  });</p>
-<p>});</p>
-<p>// good</p>
-<p>const os = require(<code>os</code>);</p>
-<p>fs.readFile(<code>./myFile.txt</code>, <code>utf8</code>, (err, data) =&gt; {</p>
-<p>  data.split(os.EOL).forEach(line =&gt; {</p>
-<pre><code>// do something
-</code></pre><p>  });</p>
-<p>});</p>
-</blockquote>
-<h1 id="HTTP-状态码"><a href="#HTTP-状态码" class="headerlink" title="HTTP 状态码"></a>HTTP 状态码</h1><p>NodeJS帮我们内置了HTTP状态码及其描述，也就是<code>http.STATUS_CODES</code>，键为状态值，值为描述:<br><img src="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib0vZALXibl3bLyFLgWHnXKvoGkU7l7AVxN27CTJOHslaXtEEHvjjVUS3wiaiaFFK8Of5df4zSLr9jOLg/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt="img"></p>
-<p>你可以按照如下方法使用:</p>
-<blockquote>
-<p>someResponse.code === 301; // true</p>
-<p>require(<code>http</code>).STATUS_CODES[someResponse.code] === <code>Moved Permanently</code>; // true</p>
-</blockquote>
-<h1 id="避免异常崩溃"><a href="#避免异常崩溃" class="headerlink" title="避免异常崩溃"></a>避免异常崩溃</h1><p>有时候碰到如下这种导致服务端崩溃的情况还是挺无奈的:</p>
-<blockquote>
-<p>const jsonData = getDataFromSomeApi(); // But oh no, bad data!</p>
-<p>const data = JSON.parse(jsonData); // Loud crashing noise.</p>
-</blockquote>
-<p>我为了避免这种情况，在全局加上了一个:</p>
-<blockquote>
-<p>process.on(<code>uncaughtException</code>, console.error);</p>
-</blockquote>
-<p>当然，这种办法绝不是最佳实践，如果是在大型项目中我还是会使用PM2，然后将所有可能崩溃的代码加入到<code>try...catch</code>中。</p>
-<h1 id="Just-this-once"><a href="#Just-this-once" class="headerlink" title="Just this once()"></a>Just this once()</h1><p>除了<code>on</code>方法，<code>once</code>方法也适用于所有的EventEmitters，希望我不是最后才知道这个的:</p>
-<blockquote>
-<p>server.once(<code>request</code>, (req, res) =&gt; res.end(<code>No more from me.</code>));</p>
-</blockquote>
-<h1 id="Custom-Console"><a href="#Custom-Console" class="headerlink" title="Custom Console"></a>Custom Console</h1><p>你可以使用<code>new console.Console(standardOut,errorOut)</code>，然后设置自定义的输出流。你可以选择创建console将数据输出到文件或者Socket或者第三方中。</p>
-<h1 id="DNS-lookup"><a href="#DNS-lookup" class="headerlink" title="DNS lookup"></a>DNS lookup</h1><p>某个年轻人告诉我，Node并不会缓存DNS查询信息，因此你在使用URL之后要等个几毫秒才能获取到数据。不过其实你可以使用<code>dns.lookup()</code>来缓存数据:</p>
-<blockquote>
-<p>dns.lookup(<code>www.myApi.com</code>, 4, (err, address) =&gt; {</p>
-<p>  cacheThisForLater(address);</p>
-<p>});</p>
-</blockquote>
-<h1 id="fs-在不同OS上有一定差异"><a href="#fs-在不同OS上有一定差异" class="headerlink" title="fs 在不同OS上有一定差异"></a>fs 在不同OS上有一定差异</h1><ul>
-<li><code>fs.stats()</code>返回的对象中的<code>mode</code>属性在Windows与其他操作系统中存在差异。</li>
-<li><code>fs.lchmod()</code>仅在macOS中有效。</li>
-<li>仅在Windows中支持调用<code>fs.symlink()</code>时使用<code>type</code>参数。</li>
-<li>仅仅在macOS与Windows中调用<code>fs.watch()</code>时传入<code>recursive</code>选项。</li>
-<li>在Linux与Windows中<code>fs.watch()</code>的回调可以传入某个文件名</li>
-<li>使用<code>fs.open()</code>以及<code>a+</code>属性打开某个目录时仅仅在FreeBSD以及Windows上起作用，在macOS以及Linux上则存在问题。</li>
-<li>在Linux下以追加模式打开某个文件时，传入到<code>fs.write()</code>的<code>position</code>参数会被忽略。</li>
-</ul>
-<h1 id="net-模块差不多比http快上两倍"><a href="#net-模块差不多比http快上两倍" class="headerlink" title="net 模块差不多比http快上两倍"></a>net 模块差不多比http快上两倍</h1><p>笔者在文档中看到一些关于二者性能的讨论，还特地运行了两个服务器来进行真实比较。结果来看<code>http.Server</code>大概每秒可以接入3400个请求，而<code>net.Server</code>可以接入大概5500个请求。</p>
-<blockquote>
-<p>// This makes two connections, one to a tcp server, one to an http server (both in server.js)</p>
-<p>// It fires off a bunch of connections and times the response</p>
-<p>// Both send strings.</p>
-<p>const net = require(<code>net</code>);</p>
-<p>const http = require(<code>http</code>);</p>
-<p>function parseIncomingMessage(res) {</p>
-<p>  return new Promise((resolve) =&gt; {</p>
-<pre><code>let data = ``;
-
-
-
-res.on(`data`, (chunk) =&gt; {
-
-  data += chunk;
-
-});
-
-
-
-res.on(`end`, () =&gt; resolve(data));
-</code></pre><p>  });</p>
+<p>//(example fails in IE)</p>
+<p> var A = function(name) {</p>
+<p>  this.name = name;</p>
 <p>}</p>
-<p>const testLimit = 5000;</p>
-<p>/<em>  ——————  </em>/</p>
-<p>/<em>  –  NET client  –  </em>/</p>
-<p>/<em>  ——————  </em>/</p>
-<p>function testNetClient() {</p>
-<p>  const netTest = {</p>
-<pre><code>startTime: process.hrtime(),
-
-responseCount: 0,
-
-testCount: 0,
-
-payloadData: {
-
-  type: `millipede`,
-
-  feet: 100,
-
-  test: 0,
-
-},
-</code></pre><p>  };</p>
-<p>  function handleSocketConnect() {</p>
-<pre><code>netTest.payloadData.test++;
-
-netTest.payloadData.feet++;
-
-
-
-const payload = JSON.stringify(netTest.payloadData);
-
-
-
-this.end(payload, `utf8`);
-</code></pre><p>  }</p>
-<p>  function handleSocketData() {</p>
-<pre><code>netTest.responseCount++;
-
-
-
-if (netTest.responseCount === testLimit) {
-
-  const hrDiff = process.hrtime(netTest.startTime);
-
-  const elapsedTime = hrDiff[0] * 1e3 + hrDiff[1] / 1e6;
-
-  const requestsPerSecond = (testLimit / (elapsedTime / 1000)).toLocaleString();
-
-
-
-  console.info(`net.Server handled an average of ${requestsPerSecond} requests per second.`);
-
-}
-</code></pre><p>  }</p>
-<p>  while (netTest.testCount &lt; testLimit) {</p>
-<pre><code>netTest.testCount++;
-
-const socket = net.connect(8888, handleSocketConnect);
-
-socket.on(`data`, handleSocketData);
-</code></pre><p>  }</p>
-<p>}</p>
-<p>/<em>  ——————-  </em>/</p>
-<p>/<em>  –  HTTP client  –  </em>/</p>
-<p>/<em>  ——————-  </em>/</p>
-<p>function testHttpClient() {</p>
-<p>  const httpTest = {</p>
-<pre><code>startTime: process.hrtime(),
-
-responseCount: 0,
-
-testCount: 0,
-</code></pre><p>  };</p>
-<p>  const payloadData = {</p>
-<pre><code>type: `centipede`,
-
-feet: 100,
-
-test: 0,
-</code></pre><p>  };</p>
-<p>  const options = {</p>
-<pre><code>hostname: `localhost`,
-
-port: 8080,
-
-method: `POST`,
-
-headers: {
-
-  &apos;Content-Type&apos;: `application/x-www-form-urlencoded`,
-
-},
-</code></pre><p>  };</p>
-<p>  function handleResponse(res) {</p>
-<pre><code>parseIncomingMessage(res).then(() =&gt; {
-
-  httpTest.responseCount++;
-
-
-
-  if (httpTest.responseCount === testLimit) {
-
-    const hrDiff = process.hrtime(httpTest.startTime);
-
-    const elapsedTime = hrDiff[0] * 1e3 + hrDiff[1] / 1e6;
-
-    const requestsPerSecond = (testLimit / (elapsedTime / 1000)).toLocaleString();
-
-
-
-    console.info(`http.Server handled an average of ${requestsPerSecond} requests per second.`);
-
-  }
-
-});
-</code></pre><p>  }</p>
-<p>  while (httpTest.testCount &lt; testLimit) {</p>
-<pre><code>httpTest.testCount++;
-
-payloadData.test = httpTest.testCount;
-
-payloadData.feet++;
-
-
-
-const payload = JSON.stringify(payloadData);
-
-
-
-options[`Content-Length`] = Buffer.byteLength(payload);
-
-
-
-const req = http.request(options, handleResponse);
-
-req.end(payload);
-</code></pre><p>  }</p>
-<p>}</p>
-<p>/<em>  –  Start tests  –  </em>/</p>
-<p>// flip these occasionally to ensure there’s no bias based on order</p>
-<p>setTimeout(() =&gt; {</p>
-<p>  console.info(<code>Starting testNetClient()</code>);</p>
-<p>  testNetClient();</p>
-<p>}, 50);</p>
-<p>setTimeout(() =&gt; {</p>
-<p>  console.info(<code>Starting testHttpClient()</code>);</p>
-<p>  testHttpClient();</p>
-<p>}, 2000);</p>
-<p>// This sets up two servers. A TCP and an HTTP one.</p>
-<p>// For each response, it parses the received string as JSON, converts that object and returns a string</p>
-<p>const net = require(<code>net</code>);</p>
-<p>const http = require(<code>http</code>);</p>
-<p>function renderAnimalString(jsonString) {</p>
-<p>  const data = JSON.parse(jsonString);</p>
-<p>  return <code>${data.test}: your are a ${data.type} and you have ${data.feet} feet.</code>;</p>
-<p>}</p>
-<p>/<em>  ——————  </em>/</p>
-<p>/<em>  –  NET server  –  </em>/</p>
-<p>/<em>  ——————  </em>/</p>
-<p>net</p>
-<p>  .createServer((socket) =&gt; {</p>
-<pre><code>socket.on(`data`, (jsonString) =&gt; {
-
-  socket.end(renderAnimalString(jsonString));
-
-});
-</code></pre><p>  })</p>
-<p>  .listen(8888);</p>
-<p>/<em>  ——————-  </em>/</p>
-<p>/<em>  –  HTTP server  –  </em>/</p>
-<p>/<em>  ——————-  </em>/</p>
-<p>function parseIncomingMessage(res) {</p>
-<p>  return new Promise((resolve) =&gt; {</p>
-<pre><code>let data = ``;
-
-
-
-res.on(`data`, (chunk) =&gt; {
-
-  data += chunk;
-
-});
-
-
-
-res.on(`end`, () =&gt; resolve(data));
-</code></pre><p>  });</p>
-<p>}</p>
-<p>http</p>
-<p>  .createServer()</p>
-<p>  .listen(8080)</p>
-<p>  .on(<code>request</code>, (req, res) =&gt; {</p>
-<pre><code>parseIncomingMessage(req).then((jsonString) =&gt; {
-
-  res.end(renderAnimalString(jsonString));
-
-});
-</code></pre><p>  });</p>
+<p>A.prototype == A.<strong>proto</strong>; //false</p>
+<p> A.<strong>proto</strong> == Function.prototype; //true - A’s prototype is set to its constructor’s prototype property</p>
 </blockquote>
-<h1 id="REPL-tricks"><a href="#REPL-tricks" class="headerlink" title="REPL tricks"></a>REPL tricks</h1><ul>
-<li>如果你是在REPL模式下，就是直接输入node然后进入交互状态的模式。你可以直接输入<code>.load someFile.js</code>然后可以载入包含自定义常量的文件。</li>
-<li>可以通过设置<code>NODE_REPL_HISTORY=&quot;&quot;</code>来避免将日志写入到文件中。</li>
-<li><code>_</code>用来记录最后一个计算值。</li>
-<li>在REPL启动之后，所有的模块都已经直接加载成功。可以使用<code>os.arch()</code>而不是<code>require(</code>os<code>).arch()</code>来使用。</li>
-</ul>
+<p>给个例子撒</p>
+<p>你可能曾经上百次的像这样使用javascript，现在当你再次看到这样的代码的时候，你或许会有不同的理解。</p>
+<blockquote>
+<p>//Constructor. <em>this</em> is returned as new object and its internal [[prototype]] property will be set to the constructor’s default prototype property</p>
+<p>var Circle = function(radius) {</p>
+<pre><code>this.radius = radius;
+
+//next line is implicit, added for illustration only
+
+//this.__proto__ = Circle.prototype;
+</code></pre><p> }    </p>
+<p>//augment Circle’s default prototype property thereby augmenting the prototype of each generated instance</p>
+<p>Circle.prototype.area = function() {</p>
+<pre><code>return Math.PI*this.radius*this.radius;
+</code></pre><p> }   </p>
+<p> //create two instances of a circle and make each leverage the common prototype</p>
+<p>var a = new Circle(3), b = new Circle(4);</p>
+<p> a.area().toFixed(2); //28.27</p>
+<p> b.area().toFixed(2); //50.27</p>
+</blockquote>
+<p>棒极了。如果我更改了构造函数的原型，是否意味着已经存在的该构造函数的实例将获得构造函数的最新版本？</p>
+<p>不一定。如果修改的是原型属性，那么这样的改变将会发生。因为在a实际被创建之后，a.<strong>proto</strong>是一个对A.prototype 的一个引用，。</p>
+<blockquote>
+<p>var A = function(name) {</p>
+<pre><code>this.name = name;
+</code></pre><p> }   </p>
+<p>var a = new A(‘alpha’);</p>
+<p>a.name; //‘alpha’   </p>
+<p> A.prototype.x = 23;   </p>
+<p>a.x; //23</p>
+</blockquote>
+<hr>
+<p>译者注:这个和上例中的一样，实例对象a的原型(a.<strong>proto</strong>)是对函数A的原型属性(A.prototype)的引用，所以如果修改的是A的原型属性，</p>
+<p>改变将影响由A创建的对象实例a 在下面的例子中，但是对函数A的原型进行了修改，但是并没有反应到A所创建的实例a中</p>
+<blockquote>
+<p>var A = function(name)</p>
+<p>{</p>
+<p>this.name = name;</p>
+<p>}</p>
+<p>var a = new A(‘alpha’);</p>
+<p>a.name; //’alpha’</p>
+<p>A.<strong>proto</strong>.max = 19880716;</p>
+<p>a.max   //undefined</p>
+</blockquote>
+<p>但是如果我现在替换A的原型属性为一个新的对象，实例对象的原型a.<strong>proto</strong>却仍然引用着原来它被创建时A的原型属性</p>
+<blockquote>
+<p>var A = function(name) {</p>
+<pre><code>this.name = name;
+</code></pre><p>}  </p>
+<p> var a = new A(‘alpha’);</p>
+<p>a.name; //‘alpha’   </p>
+<p> A.prototype = {x:23};    </p>
+<p> a.x; //null</p>
+</blockquote>
+<p>译者注：即如果在实例被创建之后，改变了函数的原型属性所指向的对象，也就是改变了创建实例时实例原型所指向的对象</p>
+<p>但是这并不会影响已经创建的实例的原型。</p>
+<p>一个默认的原型是什么样子的？</p>
+<blockquote>
+<p>var A = function() {};</p>
+<p>A.prototype.constructor == A; //true</p>
+<p>var a = new A();</p>
+<p>a.constructor == A; //true (a’s constructor property inherited from it’s prototype)</p>
+</blockquote>
+<p><strong>instance of 和原型有什么关系</strong></p>
+<p>如果a的原型属于A的原型链，表达式 a instance of A 值为true。这意味着 我们可以对instance of 耍个诡计让它不在起作用</p>
+<blockquote>
+<p>var A = function() {}   </p>
+<p> var a = new A();</p>
+<p> a.<strong>proto</strong> == A.prototype; //true - so instanceof A will return true</p>
+<p> a instanceof A; //true;   </p>
+<p>//mess around with a’s prototype</p>
+<p> a.<strong>proto</strong> = Function.prototype;</p>
+<p> //a’s prototype no longer in same prototype chain as A’s prototype property</p>
+<p> a instanceof A; //false</p>
+</blockquote>
+<p>还能使用原型做些什么呢?</p>
+<p>记住我曾经所提到过的每个构造函数都有一个原型属性，它用来为每一个它所创建的实例提供原型。这同样也适用原生态的构造函数Function,String等，扩展这个属性，我们可以达到扩展指定构造函数的所有实例</p>
+<p>我曾经在之前的很多文章中使用过这个技巧来演示函数的拓展。在tracer utility 这篇文章中所有的string实例都实现了times这个方法，对字符串本身进行指定数目的复制</p>
+<blockquote>
+<p>String.prototype.times = function(count) {</p>
+<pre><code>return count &lt; 1 ? &apos;&apos; : new Array(count + 1).join(this);
+</code></pre><p> }</p>
+<p>“hello!”.times(3); //“hello!hello!hello!”;</p>
+<p>“please…”.times(6);//“please…please…please…please…please…please…”</p>
+</blockquote>
+<p><strong>告诉我继承是怎样通过原型来工作的。什么是原型链?</strong></p>
+<p>因为每个对象和原型都有一个原型(注:原型也是一个对象)，对象的原型指向对象的父，而父的原型又指向父的父，我们把这种通过原型层层连接起来的关系撑为原型链。这条链的末端一般总是默认的对象原型。</p>
+<blockquote>
+<p>a.<strong>proto</strong> = b;</p>
+<p> b.<strong>proto</strong> = c;</p>
+<p> c.<strong>proto</strong> = {}; //default object</p>
+<p>{}.<strong>proto</strong>.<strong>proto</strong>; //null</p>
+</blockquote>
+<p>原型的继承机制是发生在内部且是隐式的.当想要获得一个对象a的属性foo的值，javascript会在原型链中查找foo的存在，如果找到则返回foo的值，否则undefined被返回。</p>
+<p><strong>赋值呢？</strong></p>
+<p>原型的继承 is not a player 当属性值被设置成a.foo=’bar’是直接给a的属性foo设置了一个值bar。为了把一个属性添加到原型中，你需要直接指定该原型。</p>
+<p>以上就是这篇文章所要讲述的。我个人感觉自己对原型概念的理解还是比较深刻的，但我的观点并不能代表一切。如有纰漏和异议，敬请告知。</p>
 
       
 
@@ -571,7 +398,7 @@ res.on(`end`, () =&gt; resolve(data));
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">node.js</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">javascript</a>
         		</li>
       		
 		</ul>
@@ -627,7 +454,7 @@ res.on(`end`, () =&gt; resolve(data));
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2016/07/20/node-js的一些小知识/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2017/04/20/理解javascript原型/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -641,18 +468,9 @@ res.on(`end`, () =&gt; resolve(data));
   
 <nav id="article-nav">
   
-    <a href="/2016/09/10/MVVM和Vue-js/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          MVVM和Vue.js
-        
-      </div>
-    </a>
   
-  
-    <a href="/2016/05/18/原生JS/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">原生JS</div>
+    <a href="/2017/02/17/前端跨域请求原理及实践/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">前端跨域请求原理及实践</div>
       <i class="icon-circle-right"></i>
     </a>
   

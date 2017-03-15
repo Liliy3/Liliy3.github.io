@@ -149,6 +149,679 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-理解javascript原型" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/20/理解javascript原型/">理解javascript原型</a>
+    </h1>
+  
+
+        
+        <a href="/2017/04/20/理解javascript原型/" class="archive-article-date">
+  	<time datetime="2017-04-20T12:32:10.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-20</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>​    Javascript原型总会给人产生一些困惑，无论是经验丰富的专家，还是作者自己也时常表现出对这个概念某些有限的理解，我认为这样的困惑在我们一开始接触原型时就已经产生了，它们常常和new、constructor相关，特别是函数(function)的原型(prototype)属性(property)。事实上，原型是一种非常简单的概念。为了更好的理解它，我们应该首先记住这个原则，那就是忘记我们已经学到的关于构造原型(construtor prototypes)的认识。</p>
+<p><strong>什么是原型？</strong></p>
+<p>原型是一个对象，其他对象可以通过它实现属性继承。</p>
+<p><strong>任何一个对象都可以成为原型么？</strong></p>
+<p>是</p>
+<p><strong>哪些对象有原型</strong></p>
+<p>所有的对象在默认的情况下都有一个原型，因为原型本身也是对象，所以每个原型自身又有一个原型(只有一种例外，默认的对象原型在原型链的顶端。更多关于原型链的将在后面介绍)</p>
+<p><strong>好吧，再绕回来，那什么又是对象呢?</strong></p>
+<p>在javascript中，一个对象就是任何无序键值对的集合,如果它不是一个主数据类型(undefined，null，boolean，number，or string)，那它就是一个对象</p>
+<p>你说每个对象都有一个原型，可是我当我写成({}).prototype 我得到了一个null，你说的不对吧？</p>
+<p>忘记你已经学到的关于原型属性的一切，它可能就是你对原型困惑的根源所在。一个对象的真正原型是被对象内部的[[Prototype]]属性(property)所持有。ECMA引入了标准对象原型访问器Object.getPrototype(object)，到目前为止只有Firefox和chrome实现了此访问器。除了IE，其他的浏览器支持非标准的访问器<strong>proto</strong>，如果这两者都不起作用的，我们需要从对象的构造函数中找到的它原型属性。下面的代码展示了获取对象原型的方法</p>
+<p>var a = {};</p>
+<blockquote>
+<p> //Firefox 3.6 and Chrome 5</p>
+<p> Object.getPrototypeOf(a); //[object Object]  </p>
+<p> //Firefox 3.6, Chrome 5 and Safari 4</p>
+<p>a.<strong>proto</strong>; //[object Object]  </p>
+<p> //all browsers</p>
+<p> a.constructor.prototype; //[object Object]</p>
+</blockquote>
+<p>ok，一切都进行的很好，但是false明明是一个主数据类型，可是false.<strong>proto</strong>却返回了一个值</p>
+<p>当你试图获取一个主数据类型的原型时，它被强制转化成了一个对象</p>
+<blockquote>
+<p>//(works in IE too, but only by accident)</p>
+<p>false.<strong>proto</strong> === Boolean(false).<strong>proto</strong>; //true</p>
+</blockquote>
+<p><strong>我想在继承中使用原型，那我该怎么做？</strong></p>
+<p>如果仅仅只是因为一个实例而使用原型是没有多大意义的，这和直接添加属性到这个实例是一样的，假如我们已经创建了一个实例对象 ，我们想要继承一个已经存在的对象的功能比如说Array，我们可以像下面这样做( 在支持<strong>proto</strong> 的浏览器中)</p>
+<blockquote>
+<p>//unusual case and does not work in IE</p>
+<p>var a = {};</p>
+<p>a.<strong>proto</strong> = Array.prototype;</p>
+<p>a.length; //0</p>
+</blockquote>
+<hr>
+<p> 译者注:上面这个例子中，首先创建了一个对象a，然后通过a的原型来达到继承Array 这个已经存在的对象的功能</p>
+<hr>
+<p>原型真正魅力体现在多个实例共用一个通用原型的时候。原型对象(注:也就是某个对象的原型所引用的对象)的属性一旦定义，就可以被多个引用它的实例所继承(注:即这些实例对象的原型所指向的就是这个原型对象)，这种操作在性能和维护方面其意义是不言自明的</p>
+<p><strong>这也是构造函数的存在的原因么?</strong></p>
+<p>是的。构造函数提供了一种方便的跨浏览器机制，这种机制允许在创建实例时为实例提供一个通用的原型</p>
+<p><strong>在你能够提供一个例子之前，我需要知道constructor.prototype 属性究竟是什么？</strong></p>
+<p>首先，javascript并没有在构造函数(constructor)和其他函数之间做区分，所以说每个函数都有一个原型属性。反过来，如果不是函数，将不会有这样一个属性。请看下面的代码</p>
+<blockquote>
+<p>//function will never be a constructor but it has a prototype property anyway</p>
+<p>Math.max.prototype; //[object Object]</p>
+<p>//function intended to be a constructor has a prototype too</p>
+<p>var A = function(name) {</p>
+<pre><code>this.name = name;
+</code></pre><p>}</p>
+<p> A.prototype; //[object Object]   </p>
+<p> //Math is not a function so no prototype property</p>
+<p> Math.prototype; //null</p>
+</blockquote>
+<p>现在我们可以下个定义了：函数A的原型属性(prototype property )是一个对象，当这个函数被用作构造函数来创建实例时，该函数的原型属性将被作为原型赋值给所有对象实例(注:即所有实例的原型引用的是函数的原型属性)</p>
+<hr>
+<p>译者注:以下的代码更详细的说明这一切</p>
+<blockquote>
+<p>//创建一个函数b</p>
+<p>var b = function(){ var one; }</p>
+<p>//使用b创建一个对象实例c</p>
+<p>var c = new b();</p>
+<p>//查看b 和c的构造函数</p>
+<p>b.constructor;  // function Function() { [native code]}</p>
+<p>b.constructor==Function.constructor; //true</p>
+<p>c.constructor; //实例c的构造函数 即 b function(){ var one; }</p>
+<p>c.constructor==b //true</p>
+<p>//b是一个函数，查看b的原型如下</p>
+<p>b.constructor.prototype // function (){}</p>
+<p>b.<strong>proto</strong>  //function (){}</p>
+<p>//b是一个函数，由于javascript没有在构造函数constructor和函数function之间做区分，所以函数像constructor一样，</p>
+<p>//有一个原型属性，这和函数的原型(b.<strong>proto</strong> 或者b.construtor.prototype)是不一样的</p>
+<p>b.prototype //[object Object]   函数b的原型属性</p>
+<p>b.prototype==b.constructor.prototype //fasle</p>
+<p>b.prototype==b.<strong>proto</strong>  //false</p>
+<p>b.<strong>proto</strong>==b.constructor.prototype //true</p>
+<p>//c是一个由b创建的对象实例，查看c的原型如下</p>
+<p>c.constructor.prototype //[object Object] 这是对象的原型</p>
+<p>c.<strong>proto</strong> //[object Object] 这是对象的原型</p>
+<p>c.constructor.prototype==b.constructor.prototype;  //false  c的原型和b的原型比较</p>
+<p>c.constructor.prototype==b.prototype;  //true c的原型和b的原型属性比较</p>
+<p>//为函数b的原型属性添加一个属性max</p>
+<p>b.prototype.max = 3</p>
+<p>//实例c也有了一个属性max</p>
+<p>c.max  //3</p>
+</blockquote>
+<p>上面的例子中，对象实例c的原型和函数的b的原型属性是一样的，如果改变b的原型属性，则对象实例c</p>
+<p>的原型也会改变</p>
+<p>理解一个函数的原型属性(function’s prototype property )其实和实际的原型(prototype)没有关系对我们来说至关重要</p>
+<blockquote>
+<p>//(example fails in IE)</p>
+<p> var A = function(name) {</p>
+<p>  this.name = name;</p>
+<p>}</p>
+<p>A.prototype == A.<strong>proto</strong>; //false</p>
+<p> A.<strong>proto</strong> == Function.prototype; //true - A’s prototype is set to its constructor’s prototype property</p>
+</blockquote>
+<p>给个例子撒</p>
+<p>你可能曾经上百次的像这样使用javascript，现在当你再次看到这样的代码的时候，你或许会有不同的理解。</p>
+<blockquote>
+<p>//Constructor. <em>this</em> is returned as new object and its internal [[prototype]] property will be set to the constructor’s default prototype property</p>
+<p>var Circle = function(radius) {</p>
+<pre><code>this.radius = radius;
+
+//next line is implicit, added for illustration only
+
+//this.__proto__ = Circle.prototype;
+</code></pre><p> }    </p>
+<p>//augment Circle’s default prototype property thereby augmenting the prototype of each generated instance</p>
+<p>Circle.prototype.area = function() {</p>
+<pre><code>return Math.PI*this.radius*this.radius;
+</code></pre><p> }   </p>
+<p> //create two instances of a circle and make each leverage the common prototype</p>
+<p>var a = new Circle(3), b = new Circle(4);</p>
+<p> a.area().toFixed(2); //28.27</p>
+<p> b.area().toFixed(2); //50.27</p>
+</blockquote>
+<p>棒极了。如果我更改了构造函数的原型，是否意味着已经存在的该构造函数的实例将获得构造函数的最新版本？</p>
+<p>不一定。如果修改的是原型属性，那么这样的改变将会发生。因为在a实际被创建之后，a.<strong>proto</strong>是一个对A.prototype 的一个引用，。</p>
+<blockquote>
+<p>var A = function(name) {</p>
+<pre><code>this.name = name;
+</code></pre><p> }   </p>
+<p>var a = new A(‘alpha’);</p>
+<p>a.name; //‘alpha’   </p>
+<p> A.prototype.x = 23;   </p>
+<p>a.x; //23</p>
+</blockquote>
+<hr>
+<p>译者注:这个和上例中的一样，实例对象a的原型(a.<strong>proto</strong>)是对函数A的原型属性(A.prototype)的引用，所以如果修改的是A的原型属性，</p>
+<p>改变将影响由A创建的对象实例a 在下面的例子中，但是对函数A的原型进行了修改，但是并没有反应到A所创建的实例a中</p>
+<blockquote>
+<p>var A = function(name)</p>
+<p>{</p>
+<p>this.name = name;</p>
+<p>}</p>
+<p>var a = new A(‘alpha’);</p>
+<p>a.name; //’alpha’</p>
+<p>A.<strong>proto</strong>.max = 19880716;</p>
+<p>a.max   //undefined</p>
+</blockquote>
+<p>但是如果我现在替换A的原型属性为一个新的对象，实例对象的原型a.<strong>proto</strong>却仍然引用着原来它被创建时A的原型属性</p>
+<blockquote>
+<p>var A = function(name) {</p>
+<pre><code>this.name = name;
+</code></pre><p>}  </p>
+<p> var a = new A(‘alpha’);</p>
+<p>a.name; //‘alpha’   </p>
+<p> A.prototype = {x:23};    </p>
+<p> a.x; //null</p>
+</blockquote>
+<p>译者注：即如果在实例被创建之后，改变了函数的原型属性所指向的对象，也就是改变了创建实例时实例原型所指向的对象</p>
+<p>但是这并不会影响已经创建的实例的原型。</p>
+<p>一个默认的原型是什么样子的？</p>
+<blockquote>
+<p>var A = function() {};</p>
+<p>A.prototype.constructor == A; //true</p>
+<p>var a = new A();</p>
+<p>a.constructor == A; //true (a’s constructor property inherited from it’s prototype)</p>
+</blockquote>
+<p><strong>instance of 和原型有什么关系</strong></p>
+<p>如果a的原型属于A的原型链，表达式 a instance of A 值为true。这意味着 我们可以对instance of 耍个诡计让它不在起作用</p>
+<blockquote>
+<p>var A = function() {}   </p>
+<p> var a = new A();</p>
+<p> a.<strong>proto</strong> == A.prototype; //true - so instanceof A will return true</p>
+<p> a instanceof A; //true;   </p>
+<p>//mess around with a’s prototype</p>
+<p> a.<strong>proto</strong> = Function.prototype;</p>
+<p> //a’s prototype no longer in same prototype chain as A’s prototype property</p>
+<p> a instanceof A; //false</p>
+</blockquote>
+<p>还能使用原型做些什么呢?</p>
+<p>记住我曾经所提到过的每个构造函数都有一个原型属性，它用来为每一个它所创建的实例提供原型。这同样也适用原生态的构造函数Function,String等，扩展这个属性，我们可以达到扩展指定构造函数的所有实例</p>
+<p>我曾经在之前的很多文章中使用过这个技巧来演示函数的拓展。在tracer utility 这篇文章中所有的string实例都实现了times这个方法，对字符串本身进行指定数目的复制</p>
+<blockquote>
+<p>String.prototype.times = function(count) {</p>
+<pre><code>return count &lt; 1 ? &apos;&apos; : new Array(count + 1).join(this);
+</code></pre><p> }</p>
+<p>“hello!”.times(3); //“hello!hello!hello!”;</p>
+<p>“please…”.times(6);//“please…please…please…please…please…please…”</p>
+</blockquote>
+<p><strong>告诉我继承是怎样通过原型来工作的。什么是原型链?</strong></p>
+<p>因为每个对象和原型都有一个原型(注:原型也是一个对象)，对象的原型指向对象的父，而父的原型又指向父的父，我们把这种通过原型层层连接起来的关系撑为原型链。这条链的末端一般总是默认的对象原型。</p>
+<blockquote>
+<p>a.<strong>proto</strong> = b;</p>
+<p> b.<strong>proto</strong> = c;</p>
+<p> c.<strong>proto</strong> = {}; //default object</p>
+<p>{}.<strong>proto</strong>.<strong>proto</strong>; //null</p>
+</blockquote>
+<p>原型的继承机制是发生在内部且是隐式的.当想要获得一个对象a的属性foo的值，javascript会在原型链中查找foo的存在，如果找到则返回foo的值，否则undefined被返回。</p>
+<p><strong>赋值呢？</strong></p>
+<p>原型的继承 is not a player 当属性值被设置成a.foo=’bar’是直接给a的属性foo设置了一个值bar。为了把一个属性添加到原型中，你需要直接指定该原型。</p>
+<p>以上就是这篇文章所要讲述的。我个人感觉自己对原型概念的理解还是比较深刻的，但我的观点并不能代表一切。如有纰漏和异议，敬请告知。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">javascript</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/04/20/理解javascript原型/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
+    <article id="post-前端跨域请求原理及实践" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/02/17/前端跨域请求原理及实践/">前端跨域请求原理及实践</a>
+    </h1>
+  
+
+        
+        <a href="/2017/02/17/前端跨域请求原理及实践/" class="archive-article-date">
+  	<time datetime="2017-02-17T12:55:39.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-17</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>作者：高鹏</p>
+<p>tingandpeng.com/2016/09/05/前端跨域请求原理及实践/</p>
+<p><a href="http://mp.weixin.qq.com/s?__biz=MzAxODE2MjM1MA==&amp;mid=402764500&amp;idx=1&amp;sn=cfcc178c7718d548b7cdc04758502bd9&amp;scene=21#wechat_redirect" target="_blank" rel="external">如有好文章投稿，请点击 → 这里了解详情</a></p>
+</blockquote>
+<p><strong>一、 跨域请求的含义</strong></p>
+<p>浏览器的同源策略，出于防范跨站脚本的攻击，禁止客户端脚本（如 JavaScript）对不同域的服务进行跨站调用。</p>
+<p>一般的，只要网站的 协议名protocol、 主机host、 端口号port 这三个中的任意一个不同，网站间的数据请求与传输便构成了跨域调用。这也是我们下面实践的理论基础。我们利用 NodeJs 创建了两个服务器，分别监听 3000、 3001 端口（下面简称 服务器3000 与 服务器3001 ），由于端口号不一样，这两个服务器以及服务器上页面通信构成了跨域请求。</p>
+<p>在服务器3000 上有如下的页面：</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib14u1p5qwMSKMsNvfQUeU0ckRujt0pLM9qyuicoeJ5DM8V1icsWKzGiaOria2hkzLg6dLe81ODPWJW9sQ/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt="img"></p>
+<p>服务器3000 上的请求页面中包含如下 JavaScript 代码：</p>
+<blockquote>
+<p>$(function() {</p>
+<pre><code>$(&quot;#submit&quot;).click(function() {
+
+    var data = {
+
+        name: $(&quot;#name&quot;).val(),
+
+        id: $(&quot;#id&quot;).val()
+
+    };
+
+    $.ajax({
+
+        type: &apos;POST&apos;,
+
+        data: data,
+
+        url: &apos;http://localhost:3000/ajax/deal&apos;,
+
+        dataType: &apos;json&apos;,
+
+        cache: false,
+
+        timeout: 5000,
+
+        success: function(data) {
+
+            console.log(data)
+
+        },
+
+        error: function(jqXHR, textStatus, errorThrown) {
+
+            console.log(&apos;error &apos; + textStatus + &apos; &apos; + errorThrown);
+
+        }
+
+    });
+
+});
+</code></pre><p>});</p>
+</blockquote>
+<p>服务器3000 对应的处理函数为</p>
+<blockquote>
+<p>pp.post(‘/ajax/deal’, function(req, res) {</p>
+<pre><code>console.log(&quot;server accept: &quot;, req.body.name, req.body.id)
+
+var data = {
+
+    name: req.body.name + &apos; - server 3000 process&apos;,
+
+    id: req.body.id + &apos; - server 3000 process&apos;
+
+}
+
+res.send(data)
+
+res.end()
+</code></pre><p>})</p>
+</blockquote>
+<p>请求页面返回结果：</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib14u1p5qwMSKMsNvfQUeU0coGHLbicLy9uWnL1MbMUiaicTMUVZ7fJnbE6me8ZBCMmKoplEg4t8ibm9jQ/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt="img"></p>
+<p>此处数据处理成功。</p>
+<p>由于数据请求一般都是由页面发送数据字段，服务器根据这些字段作相应的处理，如数据库查询，字符串操作等等。所以我们这里简单的处理数据（在数据后面加上字符串‘server 3000 process’），并且返回给浏览器，表示数据经过服务器端处理。</p>
+<p>如果让 服务器3000 上的页面向 服务器 3001 发起请求会怎样呢？</p>
+<p>将请求页面中的 ajax 请求路径改为：</p>
+<blockquote>
+<p>$.ajax({</p>
+<pre><code>...
+
+url: &apos;http://localhost:3001/ajax/deal&apos;,
+
+...
+</code></pre><p>});</p>
+</blockquote>
+<p>服务器3001 对应的处理函数与 服务器3000 类似：</p>
+<blockquote>
+<p>app.post(‘/ajax/deal’, function(req, res) {</p>
+<pre><code>console.log(&quot;server accept: &quot;, req.body.name, req.body.id)
+
+var data = {
+
+    name: req.body.name + &apos; - server 3001 process&apos;,
+
+    id: req.body.id + &apos; - server 3001 process&apos;
+
+}
+
+res.send(data)
+
+res.end()
+</code></pre><p>})</p>
+</blockquote>
+<p>结果如下：</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib14u1p5qwMSKMsNvfQUeU0c3G6fv4PRbpV6T5TlDQ45iaiaM5EicDicNwm86atEIXsAVtaxz8T8nlE3WQ/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt="img"></p>
+<p>结果证明了我们上面所说的端口号不同，发生了跨域请求的调用。</p>
+<p>需要注意的是，服务器 3001 控制台有输出：</p>
+<blockquote>
+<p>server accept:  chiaki 3001</p>
+</blockquote>
+<p>这说明跨域请求并非是浏览器限制了发起跨站请求，而是请求可以正常发起，到达服务器端，但是服务器返回的结果会被浏览器拦截。</p>
+<p><strong>二、 利用 JSONP 实现跨域调用</strong></p>
+<p>说道跨域调用，可能大家首先想到的或者听说过的就是 JSONP 了。</p>
+<p>2.1 什么是JSONP</p>
+<blockquote>
+<p>JSONP (JSON with Padding or JSON-P) is a JSON extension used by web developers to overcome the cross-domain restrictions imposed by browsers’ same-origin policy that limits access to resources retrieved from origins other than the one the page was served by. In layman’s terms, one website cannot just simply access the data from another website.</p>
+<p>It was developed because handling a browsers’ same origin policy can be difficult, so using JSONP abstracts the difficulties and makes it easier.</p>
+<p>JSON stands for “JavaScript Object Notation”, a format by which object fields are represented as key-value pairs which is used to represent data.</p>
+</blockquote>
+<p>JSONP 是 JSON 的一种使用模式，可以解决主流浏览器的跨域数据访问问题。其原理是根据 XmlHttpRequest 对象受到同源策略的影响，而 <script> 标签元素却不受同源策略影响，可以加载跨域服务器上的脚本，网页可以从其他来源动态产生 JSON 资料。用 JSONP 获取的不是 JSON 数据，而是可以直接运行的 JavaScript 语句。</p>
+<p><strong>2.2 使用 jQuery 集成的 $.ajax 实现 JSONP 跨域调用</strong></p>
+<p>我们先从简单的实现开始，利用 jQuery 中的 $.ajax 来实现上诉的跨域调用。</p>
+<p>依然是上面的例子，我们将 服务器 3000 上的请求页面的 JavaScript 代码改为：</p>
+<blockquote>
+<p>// 回调函数</p>
+<p>function jsonpCallback(data) {</p>
+<pre><code>console.log(&quot;jsonpCallback: &quot; + data.name)
+</code></pre><p>}</p>
+<p>$(“#submit”).click(function() {</p>
+<pre><code>var data = {
+
+    name: $(&quot;#name&quot;).val(),
+
+    id: $(&quot;#id&quot;).val()
+
+};
+
+$.ajax({
+
+    url: &apos;http://localhost:3001/ajax/deal&apos;,
+
+    data: data,
+
+    dataType: &apos;jsonp&apos;,
+
+    cache: false,
+
+    timeout: 5000,
+
+    // jsonp 字段含义为服务器通过什么字段获取回调函数的名称
+
+    jsonp: &apos;callback&apos;,
+
+    // 声明本地回调函数的名称，jquery 默认随机生成一个函数名称
+
+    jsonpCallback: &apos;jsonpCallback&apos;,
+
+    success: function(data) {
+
+        console.log(&quot;ajax success callback: &quot; + data.name)
+
+    },
+
+    error: function(jqXHR, textStatus, errorThrown) {
+
+        console.log(textStatus + &apos; &apos; + errorThrown);
+
+    }
+
+});
+</code></pre><p>});</p>
+</blockquote>
+<p>服务器 3001 上对应的处理函数为：</p>
+<blockquote>
+<p>app.get(‘/ajax/deal’, function(req, res) {</p>
+<pre><code>console.log(&quot;server accept: &quot;, req.query.name, req.query.id)
+
+var data = &quot;{&quot; + &quot;name:&apos;&quot; + req.query.name + &quot; - server 3001 process&apos;,&quot; + &quot;id:&apos;&quot; + req.query.id + &quot; - server 3001 process&apos;&quot; +&quot;}&quot;
+
+var callback = req.query.callback
+
+var jsonp = callback + &apos;(&apos; + data + &apos;)&apos;
+
+console.log(jsonp)
+
+res.send(jsonp)
+
+res.end()
+</code></pre><p>})</p>
+</blockquote>
+<p>这里一定要注意 data 中字符串拼接，不能直接将 JSON 格式的 data 直接传给回调函数，否则会发生编译错误： parsererror Error: jsonpCallback was not called。</p>
+<p>其实脑海里应该有一个概念：利用 JSONP 格式返回的值一段要立即执行的 JavaScript 代码，所以不会像 ajax 的 XmlHttpRequest 那样可以监听不同事件对数据进行不同处理。</p>
+<p>处理结果如下所示：</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib14u1p5qwMSKMsNvfQUeU0cFNKR6cmGFD9Vzg8WGV9jmic9msqGRU3PDdOYib9rTJibkpiaGAibaVmpv6w/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt="img"></p>
+<p><strong>2.3 使用  标签原生实现 JSONP</strong></p>
+<p>经过上面的事件，你是不是觉得 JSONP 的实现和 Ajax 大同小异？</p>
+<p>其实，由于实现的原理不同，由 JSONP 实现的跨域调用不是通过 XmlHttpRequset 对象，而是通过 script 标签，所以在实现原理上，JSONP 和 Ajax 已经一点关系都没有了。看上去形式相似只是由于 jQuery 对 JSONP 做了封装和转换。</p>
+<p>比如在上面的例子中，我们假设要传输的数据 data 格式如下：</p>
+<blockquote>
+<p>{</p>
+<pre><code>name: &quot;chiaki&quot;,
+
+id&quot;: &quot;3001&quot;
+</code></pre><p>}</p>
+</blockquote>
+<p>那么数据是如何传输的呢？HTTP 请求头的第一行如下：</p>
+<blockquote>
+<p>GET /ajax/deal?callback=jsonpCallback&amp;name=chiaki&amp;id=3001&amp;_=1473164876032 HTTP/1.1</p>
+</blockquote>
+<p>可见，即使形式上是用 POST 传输一个 JSON 格式的数据，其实发送请求时还是转换成 GET 请求。</p>
+<p>其实如果理解 JSONP 的原理的话就不难理解为什么只能使用 GET 请求方法了。由于是通过 script 标签进行请求，所以上述传输过程根本上是以下的形式：</p>
+<blockquote>
+<script src = 'http://localhost:3001/ajax/deal?callback=jsonpCallback&name=chiaki&id=3001&_=1473164876032'></script>
+
+
+</p><p>这样从服务器返回的代码就可以直接在这个 script 标签中运行了。下面我们自己实现一个 JSONP：</p>
+<p>服务器 3000请求页面的 JavaScript 代码中，只有回调函数 jsonpCallback：</p>
+<blockquote>
+<p>function jsonpCallback(data) {</p>
+<pre><code>console.log(&quot;jsonpCallback: &quot;+data.name)
+</code></pre><p>}</p>
+</blockquote>
+<p>服务器 3000请求页面还包含一个 script 标签：</p>
+<blockquote>
+<script src="http://localhost:3001/jsonServerResponse?jsonp=jsonpCallback"></script>
+
+</blockquote>
+<p>服务器 3001上对应的处理函数：</p>
+<blockquote>
+<p>app.get(‘/jsonServerResponse’, function(req, res) {</p>
+<pre><code>var cb = req.query.jsonp
+
+console.log(cb)
+
+var data = &apos;var data = {&apos; + &apos;name: $(&quot;#name&quot;).val() + &quot; - server 3001 jsonp process&quot;,&apos; + &apos;id: $(&quot;#id&quot;).val() + &quot; - server 3001 jsonp process&quot;&apos; + &apos;};&apos;
+
+var debug = &apos;console.log(data);&apos;
+
+var callback = &apos;$(&quot;#submit&quot;).click(function() {&apos; + data + cb + &apos;(data);&apos; + debug + &apos;});&apos;
+
+res.send(callback)
+
+res.end()
+</code></pre><p>})</p>
+</blockquote>
+<p>与上面一样，我们在所获取的参数后面加上 “ – server 3001 jsonp process” 代表服务器对数据的操作。从代码中我么可以看到，处理函数除了根据参数做相应的处理，更多的也是进行字符串的拼接。</p>
+<p>最终的结果为：</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib14u1p5qwMSKMsNvfQUeU0cBlA3pC1azdbX6STic1B9VmwuP4wdCjReXzyx6UgB2TAiboqg5vIqEaPA/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt="img"></p>
+<p><strong>2.4 JSONP 总结</strong></p>
+<p>至此，我们了解了 JSONP 的原理以及实现方式，它帮我们实现前端跨域请求，但是在实践的过程中，我们还是可以发现它的不足：</p>
+<p>只能使用 GET 方法发起请求，这是由于 script 标签自身的限制决定的。</p>
+<p>不能很好的发现错误，并进行处理。与 Ajax 对比，由于不是通过 XmlHttpRequest 进行传输，所以不能注册 success、 error 等事件监听函数。</p>
+<p><strong>三、 使用 CORS 实现跨域调用</strong></p>
+<p><strong>3.1 什么是 CORS？</strong></p>
+<p>Cross-Origin Resource Sharing（CORS）跨域资源共享是一份浏览器技术的规范，提供了 Web 服务从不同域传来沙盒脚本的方法，以避开浏览器的同源策略，是 JSONP 模式的现代版。与 JSONP 不同，CORS 除了 GET 要求方法以外也支持其他的 HTTP 要求。用 CORS 可以让网页设计师用一般的 XMLHttpRequest，这种方式的错误处理比 JSONP 要来的好。另一方面，JSONP 可以在不支持 CORS 的老旧浏览器上运作。现代的浏览器都支持 CORS。</p>
+<p><strong>3.2 CORS 的实现</strong></p>
+<p>还是以 服务器 3000 上的请求页面向 服务器 3001 发送请求为例。</p>
+<p>服务器 3000 上的请求页面 JavaScript 不变，如下：</p>
+<blockquote>
+<p>$(function() {</p>
+<pre><code>$(&quot;#submit&quot;).click(function() {
+
+    var data = {
+
+        name: $(&quot;#name&quot;).val(),
+
+        id: $(&quot;#id&quot;).val()
+
+    };
+
+    $.ajax({
+
+        type: &apos;POST&apos;,
+
+        data: data,
+
+        url: &apos;http://localhost:3001/cors&apos;,
+
+        dataType: &apos;json&apos;,
+
+        cache: false,
+
+        timeout: 5000,
+
+        success: function(data) {
+
+            console.log(data)
+
+        },
+
+        error: function(jqXHR, textStatus, errorThrown) {
+
+            console.log(&apos;error &apos; + textStatus + &apos; &apos; + errorThrown);
+
+        }
+
+    });
+
+});
+</code></pre><p>});</p>
+</blockquote>
+<p>服务器 3001上对应的处理函数：</p>
+<blockquote>
+<p>app.post(‘/cors’, function(req, res) {</p>
+<pre><code>res.header(&quot;Access-Control-Allow-Origin&quot;, &quot;*&quot;);
+
+res.header(&quot;Access-Control-Allow-Headers&quot;, &quot;X-Requested-With&quot;);
+
+res.header(&quot;Access-Control-Allow-Methods&quot;, &quot;PUT,POST,GET,DELETE,OPTIONS&quot;);
+
+res.header(&quot;X-Powered-By&quot;, &apos; 3.2.1&apos;)
+
+res.header(&quot;Content-Type&quot;, &quot;application/json;charset=utf-8&quot;);
+
+var data = {
+
+    name: req.body.name + &apos; - server 3001 cors process&apos;,
+
+    id: req.body.id + &apos; - server 3001 cors process&apos;
+
+}
+
+console.log(data)
+
+res.send(data)
+
+res.end()
+</code></pre><p>})</p>
+</blockquote>
+<p>在服务器中对返回信息的请求头进行了设置。</p>
+<p>最终的结果为：</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib14u1p5qwMSKMsNvfQUeU0cwZmFB4zHp1G2HEW3WLb532szlSVwma9doru5iayt4VVSk1fqfdmaM1g/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt="img"></p>
+<p><strong>3.3 CORS 中属性的分析</strong></p>
+<ol>
+<li><p>Access-Control-Allow-Origin</p>
+<p>The origin parameter specifies a URI that may access the resource. The browser must enforce this. For requests without credentials, the server may specify “*” as a wildcard, thereby allowing any origin to access the resource.</p>
+</li>
+<li><p>Access-Control-Allow-Methods</p>
+<p>Specifies the method or methods allowed when accessing the resource. This is used in response to a preflight request. The conditions under which a request is preflighted are discussed above.</p>
+</li>
+<li><p>Access-Control-Allow-Headers</p>
+<p>Used in response to a preflight request to indicate which HTTP headers can be used when making the actual request.</p>
+</li>
+</ol>
+<p><strong>3.4 CORS 与 JSONP 的对比</strong></p>
+<ol>
+<li>CORS 除了 GET 方法外，也支持其它的 HTTP 请求方法如 POST、 PUT 等。</li>
+<li>CORS 可以使用 XmlHttpRequest 进行传输，所以它的错误处理方式比 JSONP 好。</li>
+<li>JSONP 可以在不支持 CORS 的老旧浏览器上运作。</li>
+</ol>
+<p><strong>四、 一些其它的跨域调用方式</strong></p>
+<p><strong>4.1 window.name</strong></p>
+<p>window对象有个name属性，该属性有个特征：即在一个窗口 (window) 的生命周期内，窗口载入的所有的页面都是共享一个 window.name 的，每个页面对 window.name 都有读写的权限，window.name 是持久存在一个窗口载入过的所有页面中的，并不会因新页面的载入而进行重置。</p>
+<p><strong>4.2 window.postMessage()</strong></p>
+<p>这个方法是 HTML5 的一个新特性，可以用来向其他所有的 window 对象发送消息。需要注意的是我们必须要保证所有的脚本执行完才发送 MessageEvent，如果在函数执行的过程中调用了他，就会让后面的函数超时无法执行。</p>
+<p>参考：<a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage" target="_blank" rel="external">https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">跨域</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/02/17/前端跨域请求原理及实践/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
     <article id="post-MVVM和Vue-js" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -426,6 +1099,85 @@
 
 
   
+    <article id="post-JavaScript的this指向问题深度解析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/03/15/JavaScript的this指向问题深度解析/">JavaScript的this指向问题深度解析</a>
+    </h1>
+  
+
+        
+        <a href="/2016/03/15/JavaScript的this指向问题深度解析/" class="archive-article-date">
+  	<time datetime="2016-03-15T12:41:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-03-15</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>JavaScript 中的 this 指向问题有很多博客在解释，仍然有很多人问。上周我们的开发团队连续两个人遇到相关问题，所以我不得不将关于前端构建技术的交流会延长了半个时候讨论 this 的问题。</p>
+</blockquote>
+<p>与我们常见的很多语言不同，JavaScript 函数中的 this 指向并不是在函数定义的时候确定的，而是在调用的时候确定的。换句话说，函数的调用方式决定了 this 指向。</p>
+<p>JavaScript 中，普通的函数调用方式有三种：直接调用、方法调用和 new 调用。除此之外，还有一些特殊的调用方式，比如通过bind() 将函数绑定到对象之后再进行调用、通过 call()、apply() 进行调用等。而 es6 引入了箭头函数之后，箭头函数调用时，其 this 指向又有所不同。下面就来分析这些情况下的 this 指向。</p>
+<p><strong>直接调用</strong></p>
+<p>直接调用，就是通过 函数名(…) 这种方式调用。这时候，函数内部的 this 指向全局对象，在浏览器中全局对象是 window，在 NodeJs 中全局对象是 global。</p>
+<p>来看一个例子：</p>
+<blockquote>
+<p>// 简单兼容浏览器和 NodeJs 的全局对象</p>
+<p>const _global = typeof window === “undefined” ? global : window;</p>
+<p>function test() {</p>
+<pre><code>console.log(this === _global);    // true
+</code></pre><p>}</p>
+<p>test();    // 直接调用</p>
+</blockquote>
+        
+          <a class="article-more-a" href="/2016/03/15/JavaScript的this指向问题深度解析/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">JavaScript</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2016/03/15/JavaScript的this指向问题深度解析/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
     <article id="post-闭包" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -479,6 +1231,78 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2016/02/08/闭包/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+  
+    <article id="post-从输入 URL 到页面加载完成的过程中都发生了什么事情？" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/11/27/从输入 URL 到页面加载完成的过程中都发生了什么事情？/">从输入 URL 到页面加载完成的过程中都发生了什么事情？</a>
+    </h1>
+  
+
+        
+        <a href="/2015/11/27/从输入 URL 到页面加载完成的过程中都发生了什么事情？/" class="archive-article-date">
+  	<time datetime="2015-11-27T14:08:39.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2015-11-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>作者：百度FEX/吴多益（@吴多益）</p>
+<p>fex.baidu.com/blog/2014/05/what-happen/</p>
+</blockquote>
+<p>背景  本文来自于之前我发的一篇微博：</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz/zPh0erYjkib2Cr8ORoPAM19muZd1JQG9PNYmw678wbibNAQLaAjC8hX7vQFmxmxxhu1crZU01JKTDKBT3UMicLgicA/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt="img"></p>
+<p>不过写这篇文章并不是为了帮大家准备面试，而是想借这道题来介绍计算机和互联网的基础知识，让读者了解它们之间是如何关联起来的。</p>
+<p>为了便于理解，我将整个过程分为了六个问题来展开。</p>
+<p><strong>第一个问题：从输入 URL 到浏览器接收的过程中发生了什么事情？</strong></p>
+        
+          <a class="article-more-a" href="/2015/11/27/从输入 URL 到页面加载完成的过程中都发生了什么事情？/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">URL</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2015/11/27/从输入 URL 到页面加载完成的过程中都发生了什么事情？/">展开全文 >></a>
         </p>
       
 
@@ -581,15 +1405,11 @@
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">MVVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">闭包 作用域</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">MVVM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -597,11 +1417,23 @@
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">闭包</a>
+                <a href="javascript:void(0)" class="js-tag color4">URL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">跨域</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">javascript</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">闭包/作用域</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">闭包</a>
               </li>
             
             <div class="clearfix"></div>

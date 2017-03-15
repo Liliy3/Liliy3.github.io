@@ -6,27 +6,42 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>node.js的一些小知识 | 生命不息，奋斗不止</title>
+  <title>前端跨域请求原理及实践 | 生命不息，奋斗不止</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="querystring:可以用作通用解析器的模块很多时候我们会从数据库或其他地方得到这种奇怪格式的字符串:name:Sophie;shape:fox;condition:new，一般来说我们会利用字符串切割的方式来讲字符串划分到JavaScript Object。不过querystring也是个不错的现成的工具:
+  <meta name="description" content="作者：高鹏
+tingandpeng.com/2016/09/05/前端跨域请求原理及实践/
+如有好文章投稿，请点击 → 这里了解详情
 
-const weirdoString = name:Sophie;shape:fo">
+一、 跨域请求的含义
+浏览器的同源策略，出于防范跨站脚本的攻击，禁止客户端脚本（如 JavaScript）对不同域的服务进行跨站调用。
+一般的，只要网站的 协议名protocol、 主机host、 端口号port 这三个中的任意一个不同，网站间的数据请求与传输便">
 <meta property="og:type" content="article">
-<meta property="og:title" content="node.js的一些小知识">
-<meta property="og:url" content="http://yoursite.com/2016/07/20/node-js的一些小知识/index.html">
+<meta property="og:title" content="前端跨域请求原理及实践">
+<meta property="og:url" content="http://yoursite.com/2017/02/17/前端跨域请求原理及实践/index.html">
 <meta property="og:site_name" content="生命不息，奋斗不止">
-<meta property="og:description" content="querystring:可以用作通用解析器的模块很多时候我们会从数据库或其他地方得到这种奇怪格式的字符串:name:Sophie;shape:fox;condition:new，一般来说我们会利用字符串切割的方式来讲字符串划分到JavaScript Object。不过querystring也是个不错的现成的工具:
+<meta property="og:description" content="作者：高鹏
+tingandpeng.com/2016/09/05/前端跨域请求原理及实践/
+如有好文章投稿，请点击 → 这里了解详情
 
-const weirdoString = name:Sophie;shape:fo">
-<meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib0vZALXibl3bLyFLgWHnXKvoU1EXKfQqaicvM7vX7UgeSs1vkxwWukNr2zywib04HqU0w2WRNvtZ4rYw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
-<meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib0vZALXibl3bLyFLgWHnXKvoGkU7l7AVxN27CTJOHslaXtEEHvjjVUS3wiaiaFFK8Of5df4zSLr9jOLg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
-<meta property="og:updated_time" content="2017-03-15T12:31:26.778Z">
+一、 跨域请求的含义
+浏览器的同源策略，出于防范跨站脚本的攻击，禁止客户端脚本（如 JavaScript）对不同域的服务进行跨站调用。
+一般的，只要网站的 协议名protocol、 主机host、 端口号port 这三个中的任意一个不同，网站间的数据请求与传输便">
+<meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib14u1p5qwMSKMsNvfQUeU0ckRujt0pLM9qyuicoeJ5DM8V1icsWKzGiaOria2hkzLg6dLe81ODPWJW9sQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
+<meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib14u1p5qwMSKMsNvfQUeU0coGHLbicLy9uWnL1MbMUiaicTMUVZ7fJnbE6me8ZBCMmKoplEg4t8ibm9jQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
+<meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib14u1p5qwMSKMsNvfQUeU0c3G6fv4PRbpV6T5TlDQ45iaiaM5EicDicNwm86atEIXsAVtaxz8T8nlE3WQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
+<meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib14u1p5qwMSKMsNvfQUeU0cBlA3pC1azdbX6STic1B9VmwuP4wdCjReXzyx6UgB2TAiboqg5vIqEaPA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
+<meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib14u1p5qwMSKMsNvfQUeU0cwZmFB4zHp1G2HEW3WLb532szlSVwma9doru5iayt4VVSk1fqfdmaM1g/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
+<meta property="og:updated_time" content="2017-03-15T12:57:01.660Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="node.js的一些小知识">
-<meta name="twitter:description" content="querystring:可以用作通用解析器的模块很多时候我们会从数据库或其他地方得到这种奇怪格式的字符串:name:Sophie;shape:fox;condition:new，一般来说我们会利用字符串切割的方式来讲字符串划分到JavaScript Object。不过querystring也是个不错的现成的工具:
+<meta name="twitter:title" content="前端跨域请求原理及实践">
+<meta name="twitter:description" content="作者：高鹏
+tingandpeng.com/2016/09/05/前端跨域请求原理及实践/
+如有好文章投稿，请点击 → 这里了解详情
 
-const weirdoString = name:Sophie;shape:fo">
-<meta name="twitter:image" content="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib0vZALXibl3bLyFLgWHnXKvoU1EXKfQqaicvM7vX7UgeSs1vkxwWukNr2zywib04HqU0w2WRNvtZ4rYw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
+一、 跨域请求的含义
+浏览器的同源策略，出于防范跨站脚本的攻击，禁止客户端脚本（如 JavaScript）对不同域的服务进行跨站调用。
+一般的，只要网站的 协议名protocol、 主机host、 端口号port 这三个中的任意一个不同，网站间的数据请求与传输便">
+<meta name="twitter:image" content="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib14u1p5qwMSKMsNvfQUeU0ckRujt0pLM9qyuicoeJ5DM8V1icsWKzGiaOria2hkzLg6dLe81ODPWJW9sQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
   
     <link rel="alternative" href="/atom.xml" title="生命不息，奋斗不止" type="application/atom+xml">
   
@@ -160,383 +175,384 @@ const weirdoString = name:Sophie;shape:fo">
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-node-js的一些小知识" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-前端跨域请求原理及实践" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      node.js的一些小知识
+      前端跨域请求原理及实践
     </h1>
   
 
         
-        <a href="/2016/07/20/node-js的一些小知识/" class="archive-article-date">
-  	<time datetime="2016-07-20T12:54:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-07-20</time>
+        <a href="/2017/02/17/前端跨域请求原理及实践/" class="archive-article-date">
+  	<time datetime="2017-02-17T12:55:39.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-17</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="querystring-可以用作通用解析器的模块"><a href="#querystring-可以用作通用解析器的模块" class="headerlink" title="querystring:可以用作通用解析器的模块"></a>querystring:可以用作通用解析器的模块</h1><p>很多时候我们会从数据库或其他地方得到这种奇怪格式的字符串:<code>name:Sophie;shape:fox;condition:new</code>，一般来说我们会利用字符串切割的方式来讲字符串划分到JavaScript Object。不过<code>querystring</code>也是个不错的现成的工具:</p>
-<blockquote>
-<p>const weirdoString = <code>name:Sophie;shape:fox;condition:new</code>;</p>
-<p>const result = querystring.parse(weirdoString, <code>;</code>, <code>:</code>);</p>
-<p>// result:</p>
-<p>// {</p>
-<p>//   name: <code>Sophie</code>,</p>
-<p>//   shape: <code>fox</code>,</p>
-<p>//   condition: <code>new</code>,</p>
-<p>// };</p>
+        <blockquote>
+<p>作者：高鹏</p>
+<p>tingandpeng.com/2016/09/05/前端跨域请求原理及实践/</p>
+<p><a href="http://mp.weixin.qq.com/s?__biz=MzAxODE2MjM1MA==&amp;mid=402764500&amp;idx=1&amp;sn=cfcc178c7718d548b7cdc04758502bd9&amp;scene=21#wechat_redirect" target="_blank" rel="external">如有好文章投稿，请点击 → 这里了解详情</a></p>
 </blockquote>
-<h1 id="V8-Inspector"><a href="#V8-Inspector" class="headerlink" title="V8 Inspector"></a>V8 Inspector</h1><p>以<code>--inspect</code>参数运行你的Node应用程序，它会反馈你某个URL。将该URL复制到Chrome中并打开，你就可以使用Chrome DevTools来调试你的Node应用程序啦。详细的实验可以参考这篇文章。不过需要注意的是，该参数仍然属于实验性质</p>
-<a id="more"></a>
-<p><img src="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib0vZALXibl3bLyFLgWHnXKvoU1EXKfQqaicvM7vX7UgeSs1vkxwWukNr2zywib04HqU0w2WRNvtZ4rYw/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt="img"></p>
-<h1 id="nextTick-与-setImmediate的区别"><a href="#nextTick-与-setImmediate的区别" class="headerlink" title="nextTick 与 setImmediate的区别"></a>nextTick 与 setImmediate的区别</h1><p>这两货的区别可能光从名字上还看不出来，我觉得应该给它们取个别名:</p>
-<ul>
-<li><code>process.nextTick()</code>应该为<code>process.sendThisToTheStartOfTheQueue()</code></li>
-<li><code>setImmediate</code>应该为<code>sendThisToTheEndOfTheQueue()</code></li>
-</ul>
-<p>再说句不相关的，React中的Props应该为<code>stuffThatShouldStayTheSameIfTheUserRefreshes</code>，而State应该为<code>stuffThatShouldBeForgottenIfTheUserRefreshes</code>。</p>
-<h1 id="Server-listen-可以使用Object作为参数"><a href="#Server-listen-可以使用Object作为参数" class="headerlink" title="Server.listen 可以使用Object作为参数"></a>Server.listen 可以使用Object作为参数</h1><p>我更喜欢命名参数的方式调用函数，这样相较于仅按照顺序的无命名参数法会更直观。别忘了Server.listen也可以使用某个Object作为参数:</p>
+<p><strong>一、 跨域请求的含义</strong></p>
+<p>浏览器的同源策略，出于防范跨站脚本的攻击，禁止客户端脚本（如 JavaScript）对不同域的服务进行跨站调用。</p>
+<p>一般的，只要网站的 协议名protocol、 主机host、 端口号port 这三个中的任意一个不同，网站间的数据请求与传输便构成了跨域调用。这也是我们下面实践的理论基础。我们利用 NodeJs 创建了两个服务器，分别监听 3000、 3001 端口（下面简称 服务器3000 与 服务器3001 ），由于端口号不一样，这两个服务器以及服务器上页面通信构成了跨域请求。</p>
+<p>在服务器3000 上有如下的页面：</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib14u1p5qwMSKMsNvfQUeU0ckRujt0pLM9qyuicoeJ5DM8V1icsWKzGiaOria2hkzLg6dLe81ODPWJW9sQ/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt="img"></p>
+<p>服务器3000 上的请求页面中包含如下 JavaScript 代码：</p>
 <blockquote>
-<p>require(<code>http</code>)</p>
-<p>  .createServer()</p>
-<p>  .listen({</p>
-<pre><code>port: 8080,
+<p>$(function() {</p>
+<pre><code>$(&quot;#submit&quot;).click(function() {
 
-host: `localhost`,
-</code></pre><p>  })</p>
-<p>  .on(<code>request</code>, (req, res) =&gt; {</p>
-<pre><code>res.end(`Hello World!`);
-</code></pre><p>  });</p>
-</blockquote>
-<p>不过这个特性不是表述在http.Server这个API中，而是在其父级net.Server的文档中。</p>
-<h1 id="相对地址"><a href="#相对地址" class="headerlink" title="相对地址"></a>相对地址</h1><p>你传入<code>fs</code>模块的距离可以是相对地址，即相对于<code>process.cwd()</code>。估计有些人早就知道了，不过我之前一直以为是只能使用绝对地址:</p>
-<blockquote>
-<p>const fs = require(<code>fs</code>);</p>
-<p>const path = require(<code>path</code>);</p>
-<p>// why have I always done this…</p>
-<p>fs.readFile(path.join(__dirname, <code>myFile.txt</code>), (err, data) =&gt; {</p>
-<p>  // do something</p>
-<p>});</p>
-<p>// when I could just do this?</p>
-<p>fs.readFile(<code>./path/to/myFile.txt</code>, (err, data) =&gt; {</p>
-<p>  // do something</p>
-<p>});</p>
-</blockquote>
-<h1 id="Path-Parsing-路径解析"><a href="#Path-Parsing-路径解析" class="headerlink" title="Path Parsing:路径解析"></a>Path Parsing:路径解析</h1><p>之前我一直不知道的某个功能就是从某个文件名中解析出路径，文件名，文件扩展等等:</p>
-<blockquote>
-<p>myFilePath = <code>/someDir/someFile.json</code>;</p>
-<p>path.parse(myFilePath).base === <code>someFile.json</code>; // true</p>
-<p>path.parse(myFilePath).name === <code>someFile</code>; // true</p>
-<p>path.parse(myFilePath).ext === <code>.json</code>; // true</p>
-</blockquote>
-<h1 id="Logging-with-colors"><a href="#Logging-with-colors" class="headerlink" title="Logging with colors"></a>Logging with colors</h1><p>别忘了<code>console.dir(obj,{colors:true})</code>能够以不同的色彩打印出键与值，这一点会大大增加日志的可读性。</p>
-<h1 id="使用setInterval执行定时任务"><a href="#使用setInterval执行定时任务" class="headerlink" title="使用setInterval执行定时任务"></a>使用setInterval执行定时任务</h1><p>我喜欢使用<code>setInterval</code>来定期执行数据库清理任务，不过默认情况下在存在<code>setInterval</code>的时候NodeJS并不会退出，你可以使用如下的方法让Node沉睡:</p>
-<blockquote>
-<p>const dailyCleanup = setInterval(() =&gt; {</p>
-<p>  cleanup();</p>
-<p>}, 1000 <em> 60 </em> 60 * 24);</p>
-<p>dailyCleanup.unref();</p>
-</blockquote>
-<h1 id="Use-Signal-Constants"><a href="#Use-Signal-Constants" class="headerlink" title="Use Signal Constants"></a>Use Signal Constants</h1><p>如果你尝试在NodeJS中杀死某个进程，估计你用过如下语法:</p>
-<blockquote>
-<p>process.kill(process.pid, <code>SIGTERM</code>);</p>
-</blockquote>
-<p>这个没啥问题，不过既然第二个参数同时能够使用字符串与整形变量，那么还不如使用全局变量呢:</p>
-<blockquote>
-<p>process.kill(process.pid, os.constants.signals.SIGTERM);</p>
-</blockquote>
-<h1 id="IP-Address-Validation"><a href="#IP-Address-Validation" class="headerlink" title="IP Address Validation"></a>IP Address Validation</h1><p>NodeJS中含有内置的IP地址校验工具，这一点可以免得你写额外的正则表达式:</p>
-<blockquote>
-<p>require(<code>net</code>).isIP(<code>10.0.0.1</code>) 返回 4</p>
-<p>require(<code>net</code>).isIP(<code>cats</code>) 返回 0</p>
-</blockquote>
-<h1 id="os-EOF"><a href="#os-EOF" class="headerlink" title="os.EOF"></a>os.EOF</h1><p>不知道你有没有手写过行结束符，看上去可不漂亮啊。NodeJS内置了<code>os.EOF</code>，其在Windows下是<code>rn</code>，其他地方是<code>n</code>，使用os.EOL能够让你的代码在不同的操作系统上保证一致性:</p>
-<blockquote>
-<p>const fs = require(<code>fs</code>);</p>
-<p>// bad</p>
-<p>fs.readFile(<code>./myFile.txt</code>, <code>utf8</code>, (err, data) =&gt; {</p>
-<p>  data.split(<code>\r\n</code>).forEach(line =&gt; {</p>
-<pre><code>// do something
-</code></pre><p>  });</p>
-<p>});</p>
-<p>// good</p>
-<p>const os = require(<code>os</code>);</p>
-<p>fs.readFile(<code>./myFile.txt</code>, <code>utf8</code>, (err, data) =&gt; {</p>
-<p>  data.split(os.EOL).forEach(line =&gt; {</p>
-<pre><code>// do something
-</code></pre><p>  });</p>
-<p>});</p>
-</blockquote>
-<h1 id="HTTP-状态码"><a href="#HTTP-状态码" class="headerlink" title="HTTP 状态码"></a>HTTP 状态码</h1><p>NodeJS帮我们内置了HTTP状态码及其描述，也就是<code>http.STATUS_CODES</code>，键为状态值，值为描述:<br><img src="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib0vZALXibl3bLyFLgWHnXKvoGkU7l7AVxN27CTJOHslaXtEEHvjjVUS3wiaiaFFK8Of5df4zSLr9jOLg/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt="img"></p>
-<p>你可以按照如下方法使用:</p>
-<blockquote>
-<p>someResponse.code === 301; // true</p>
-<p>require(<code>http</code>).STATUS_CODES[someResponse.code] === <code>Moved Permanently</code>; // true</p>
-</blockquote>
-<h1 id="避免异常崩溃"><a href="#避免异常崩溃" class="headerlink" title="避免异常崩溃"></a>避免异常崩溃</h1><p>有时候碰到如下这种导致服务端崩溃的情况还是挺无奈的:</p>
-<blockquote>
-<p>const jsonData = getDataFromSomeApi(); // But oh no, bad data!</p>
-<p>const data = JSON.parse(jsonData); // Loud crashing noise.</p>
-</blockquote>
-<p>我为了避免这种情况，在全局加上了一个:</p>
-<blockquote>
-<p>process.on(<code>uncaughtException</code>, console.error);</p>
-</blockquote>
-<p>当然，这种办法绝不是最佳实践，如果是在大型项目中我还是会使用PM2，然后将所有可能崩溃的代码加入到<code>try...catch</code>中。</p>
-<h1 id="Just-this-once"><a href="#Just-this-once" class="headerlink" title="Just this once()"></a>Just this once()</h1><p>除了<code>on</code>方法，<code>once</code>方法也适用于所有的EventEmitters，希望我不是最后才知道这个的:</p>
-<blockquote>
-<p>server.once(<code>request</code>, (req, res) =&gt; res.end(<code>No more from me.</code>));</p>
-</blockquote>
-<h1 id="Custom-Console"><a href="#Custom-Console" class="headerlink" title="Custom Console"></a>Custom Console</h1><p>你可以使用<code>new console.Console(standardOut,errorOut)</code>，然后设置自定义的输出流。你可以选择创建console将数据输出到文件或者Socket或者第三方中。</p>
-<h1 id="DNS-lookup"><a href="#DNS-lookup" class="headerlink" title="DNS lookup"></a>DNS lookup</h1><p>某个年轻人告诉我，Node并不会缓存DNS查询信息，因此你在使用URL之后要等个几毫秒才能获取到数据。不过其实你可以使用<code>dns.lookup()</code>来缓存数据:</p>
-<blockquote>
-<p>dns.lookup(<code>www.myApi.com</code>, 4, (err, address) =&gt; {</p>
-<p>  cacheThisForLater(address);</p>
-<p>});</p>
-</blockquote>
-<h1 id="fs-在不同OS上有一定差异"><a href="#fs-在不同OS上有一定差异" class="headerlink" title="fs 在不同OS上有一定差异"></a>fs 在不同OS上有一定差异</h1><ul>
-<li><code>fs.stats()</code>返回的对象中的<code>mode</code>属性在Windows与其他操作系统中存在差异。</li>
-<li><code>fs.lchmod()</code>仅在macOS中有效。</li>
-<li>仅在Windows中支持调用<code>fs.symlink()</code>时使用<code>type</code>参数。</li>
-<li>仅仅在macOS与Windows中调用<code>fs.watch()</code>时传入<code>recursive</code>选项。</li>
-<li>在Linux与Windows中<code>fs.watch()</code>的回调可以传入某个文件名</li>
-<li>使用<code>fs.open()</code>以及<code>a+</code>属性打开某个目录时仅仅在FreeBSD以及Windows上起作用，在macOS以及Linux上则存在问题。</li>
-<li>在Linux下以追加模式打开某个文件时，传入到<code>fs.write()</code>的<code>position</code>参数会被忽略。</li>
-</ul>
-<h1 id="net-模块差不多比http快上两倍"><a href="#net-模块差不多比http快上两倍" class="headerlink" title="net 模块差不多比http快上两倍"></a>net 模块差不多比http快上两倍</h1><p>笔者在文档中看到一些关于二者性能的讨论，还特地运行了两个服务器来进行真实比较。结果来看<code>http.Server</code>大概每秒可以接入3400个请求，而<code>net.Server</code>可以接入大概5500个请求。</p>
-<blockquote>
-<p>// This makes two connections, one to a tcp server, one to an http server (both in server.js)</p>
-<p>// It fires off a bunch of connections and times the response</p>
-<p>// Both send strings.</p>
-<p>const net = require(<code>net</code>);</p>
-<p>const http = require(<code>http</code>);</p>
-<p>function parseIncomingMessage(res) {</p>
-<p>  return new Promise((resolve) =&gt; {</p>
-<pre><code>let data = ``;
+    var data = {
 
+        name: $(&quot;#name&quot;).val(),
 
+        id: $(&quot;#id&quot;).val()
 
-res.on(`data`, (chunk) =&gt; {
+    };
 
-  data += chunk;
+    $.ajax({
+
+        type: &apos;POST&apos;,
+
+        data: data,
+
+        url: &apos;http://localhost:3000/ajax/deal&apos;,
+
+        dataType: &apos;json&apos;,
+
+        cache: false,
+
+        timeout: 5000,
+
+        success: function(data) {
+
+            console.log(data)
+
+        },
+
+        error: function(jqXHR, textStatus, errorThrown) {
+
+            console.log(&apos;error &apos; + textStatus + &apos; &apos; + errorThrown);
+
+        }
+
+    });
 
 });
+</code></pre><p>});</p>
+</blockquote>
+<p>服务器3000 对应的处理函数为</p>
+<blockquote>
+<p>pp.post(‘/ajax/deal’, function(req, res) {</p>
+<pre><code>console.log(&quot;server accept: &quot;, req.body.name, req.body.id)
 
+var data = {
 
+    name: req.body.name + &apos; - server 3000 process&apos;,
 
-res.on(`end`, () =&gt; resolve(data));
-</code></pre><p>  });</p>
-<p>}</p>
-<p>const testLimit = 5000;</p>
-<p>/<em>  ——————  </em>/</p>
-<p>/<em>  –  NET client  –  </em>/</p>
-<p>/<em>  ——————  </em>/</p>
-<p>function testNetClient() {</p>
-<p>  const netTest = {</p>
-<pre><code>startTime: process.hrtime(),
-
-responseCount: 0,
-
-testCount: 0,
-
-payloadData: {
-
-  type: `millipede`,
-
-  feet: 100,
-
-  test: 0,
-
-},
-</code></pre><p>  };</p>
-<p>  function handleSocketConnect() {</p>
-<pre><code>netTest.payloadData.test++;
-
-netTest.payloadData.feet++;
-
-
-
-const payload = JSON.stringify(netTest.payloadData);
-
-
-
-this.end(payload, `utf8`);
-</code></pre><p>  }</p>
-<p>  function handleSocketData() {</p>
-<pre><code>netTest.responseCount++;
-
-
-
-if (netTest.responseCount === testLimit) {
-
-  const hrDiff = process.hrtime(netTest.startTime);
-
-  const elapsedTime = hrDiff[0] * 1e3 + hrDiff[1] / 1e6;
-
-  const requestsPerSecond = (testLimit / (elapsedTime / 1000)).toLocaleString();
-
-
-
-  console.info(`net.Server handled an average of ${requestsPerSecond} requests per second.`);
+    id: req.body.id + &apos; - server 3000 process&apos;
 
 }
-</code></pre><p>  }</p>
-<p>  while (netTest.testCount &lt; testLimit) {</p>
-<pre><code>netTest.testCount++;
 
-const socket = net.connect(8888, handleSocketConnect);
+res.send(data)
 
-socket.on(`data`, handleSocketData);
-</code></pre><p>  }</p>
-<p>}</p>
-<p>/<em>  ——————-  </em>/</p>
-<p>/<em>  –  HTTP client  –  </em>/</p>
-<p>/<em>  ——————-  </em>/</p>
-<p>function testHttpClient() {</p>
-<p>  const httpTest = {</p>
-<pre><code>startTime: process.hrtime(),
-
-responseCount: 0,
-
-testCount: 0,
-</code></pre><p>  };</p>
-<p>  const payloadData = {</p>
-<pre><code>type: `centipede`,
-
-feet: 100,
-
-test: 0,
-</code></pre><p>  };</p>
-<p>  const options = {</p>
-<pre><code>hostname: `localhost`,
-
-port: 8080,
-
-method: `POST`,
-
-headers: {
-
-  &apos;Content-Type&apos;: `application/x-www-form-urlencoded`,
-
-},
-</code></pre><p>  };</p>
-<p>  function handleResponse(res) {</p>
-<pre><code>parseIncomingMessage(res).then(() =&gt; {
-
-  httpTest.responseCount++;
-
-
-
-  if (httpTest.responseCount === testLimit) {
-
-    const hrDiff = process.hrtime(httpTest.startTime);
-
-    const elapsedTime = hrDiff[0] * 1e3 + hrDiff[1] / 1e6;
-
-    const requestsPerSecond = (testLimit / (elapsedTime / 1000)).toLocaleString();
-
-
-
-    console.info(`http.Server handled an average of ${requestsPerSecond} requests per second.`);
-
-  }
-
-});
-</code></pre><p>  }</p>
-<p>  while (httpTest.testCount &lt; testLimit) {</p>
-<pre><code>httpTest.testCount++;
-
-payloadData.test = httpTest.testCount;
-
-payloadData.feet++;
-
-
-
-const payload = JSON.stringify(payloadData);
-
-
-
-options[`Content-Length`] = Buffer.byteLength(payload);
-
-
-
-const req = http.request(options, handleResponse);
-
-req.end(payload);
-</code></pre><p>  }</p>
-<p>}</p>
-<p>/<em>  –  Start tests  –  </em>/</p>
-<p>// flip these occasionally to ensure there’s no bias based on order</p>
-<p>setTimeout(() =&gt; {</p>
-<p>  console.info(<code>Starting testNetClient()</code>);</p>
-<p>  testNetClient();</p>
-<p>}, 50);</p>
-<p>setTimeout(() =&gt; {</p>
-<p>  console.info(<code>Starting testHttpClient()</code>);</p>
-<p>  testHttpClient();</p>
-<p>}, 2000);</p>
-<p>// This sets up two servers. A TCP and an HTTP one.</p>
-<p>// For each response, it parses the received string as JSON, converts that object and returns a string</p>
-<p>const net = require(<code>net</code>);</p>
-<p>const http = require(<code>http</code>);</p>
-<p>function renderAnimalString(jsonString) {</p>
-<p>  const data = JSON.parse(jsonString);</p>
-<p>  return <code>${data.test}: your are a ${data.type} and you have ${data.feet} feet.</code>;</p>
-<p>}</p>
-<p>/<em>  ——————  </em>/</p>
-<p>/<em>  –  NET server  –  </em>/</p>
-<p>/<em>  ——————  </em>/</p>
-<p>net</p>
-<p>  .createServer((socket) =&gt; {</p>
-<pre><code>socket.on(`data`, (jsonString) =&gt; {
-
-  socket.end(renderAnimalString(jsonString));
-
-});
-</code></pre><p>  })</p>
-<p>  .listen(8888);</p>
-<p>/<em>  ——————-  </em>/</p>
-<p>/<em>  –  HTTP server  –  </em>/</p>
-<p>/<em>  ——————-  </em>/</p>
-<p>function parseIncomingMessage(res) {</p>
-<p>  return new Promise((resolve) =&gt; {</p>
-<pre><code>let data = ``;
-
-
-
-res.on(`data`, (chunk) =&gt; {
-
-  data += chunk;
-
-});
-
-
-
-res.on(`end`, () =&gt; resolve(data));
-</code></pre><p>  });</p>
-<p>}</p>
-<p>http</p>
-<p>  .createServer()</p>
-<p>  .listen(8080)</p>
-<p>  .on(<code>request</code>, (req, res) =&gt; {</p>
-<pre><code>parseIncomingMessage(req).then((jsonString) =&gt; {
-
-  res.end(renderAnimalString(jsonString));
-
-});
-</code></pre><p>  });</p>
+res.end()
+</code></pre><p>})</p>
 </blockquote>
-<h1 id="REPL-tricks"><a href="#REPL-tricks" class="headerlink" title="REPL tricks"></a>REPL tricks</h1><ul>
-<li>如果你是在REPL模式下，就是直接输入node然后进入交互状态的模式。你可以直接输入<code>.load someFile.js</code>然后可以载入包含自定义常量的文件。</li>
-<li>可以通过设置<code>NODE_REPL_HISTORY=&quot;&quot;</code>来避免将日志写入到文件中。</li>
-<li><code>_</code>用来记录最后一个计算值。</li>
-<li>在REPL启动之后，所有的模块都已经直接加载成功。可以使用<code>os.arch()</code>而不是<code>require(</code>os<code>).arch()</code>来使用。</li>
-</ul>
+<p>请求页面返回结果：</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib14u1p5qwMSKMsNvfQUeU0coGHLbicLy9uWnL1MbMUiaicTMUVZ7fJnbE6me8ZBCMmKoplEg4t8ibm9jQ/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt="img"></p>
+<p>此处数据处理成功。</p>
+<p>由于数据请求一般都是由页面发送数据字段，服务器根据这些字段作相应的处理，如数据库查询，字符串操作等等。所以我们这里简单的处理数据（在数据后面加上字符串‘server 3000 process’），并且返回给浏览器，表示数据经过服务器端处理。</p>
+<p>如果让 服务器3000 上的页面向 服务器 3001 发起请求会怎样呢？</p>
+<p>将请求页面中的 ajax 请求路径改为：</p>
+<blockquote>
+<p>$.ajax({</p>
+<pre><code>...
+
+url: &apos;http://localhost:3001/ajax/deal&apos;,
+
+...
+</code></pre><p>});</p>
+</blockquote>
+<p>服务器3001 对应的处理函数与 服务器3000 类似：</p>
+<blockquote>
+<p>app.post(‘/ajax/deal’, function(req, res) {</p>
+<pre><code>console.log(&quot;server accept: &quot;, req.body.name, req.body.id)
+
+var data = {
+
+    name: req.body.name + &apos; - server 3001 process&apos;,
+
+    id: req.body.id + &apos; - server 3001 process&apos;
+
+}
+
+res.send(data)
+
+res.end()
+</code></pre><p>})</p>
+</blockquote>
+<p>结果如下：</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib14u1p5qwMSKMsNvfQUeU0c3G6fv4PRbpV6T5TlDQ45iaiaM5EicDicNwm86atEIXsAVtaxz8T8nlE3WQ/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt="img"></p>
+<p>结果证明了我们上面所说的端口号不同，发生了跨域请求的调用。</p>
+<p>需要注意的是，服务器 3001 控制台有输出：</p>
+<blockquote>
+<p>server accept:  chiaki 3001</p>
+</blockquote>
+<p>这说明跨域请求并非是浏览器限制了发起跨站请求，而是请求可以正常发起，到达服务器端，但是服务器返回的结果会被浏览器拦截。</p>
+<p><strong>二、 利用 JSONP 实现跨域调用</strong></p>
+<p>说道跨域调用，可能大家首先想到的或者听说过的就是 JSONP 了。</p>
+<p>2.1 什么是JSONP</p>
+<blockquote>
+<p>JSONP (JSON with Padding or JSON-P) is a JSON extension used by web developers to overcome the cross-domain restrictions imposed by browsers’ same-origin policy that limits access to resources retrieved from origins other than the one the page was served by. In layman’s terms, one website cannot just simply access the data from another website.</p>
+<p>It was developed because handling a browsers’ same origin policy can be difficult, so using JSONP abstracts the difficulties and makes it easier.</p>
+<p>JSON stands for “JavaScript Object Notation”, a format by which object fields are represented as key-value pairs which is used to represent data.</p>
+</blockquote>
+<p>JSONP 是 JSON 的一种使用模式，可以解决主流浏览器的跨域数据访问问题。其原理是根据 XmlHttpRequest 对象受到同源策略的影响，而 <script> 标签元素却不受同源策略影响，可以加载跨域服务器上的脚本，网页可以从其他来源动态产生 JSON 资料。用 JSONP 获取的不是 JSON 数据，而是可以直接运行的 JavaScript 语句。</p>
+<p><strong>2.2 使用 jQuery 集成的 $.ajax 实现 JSONP 跨域调用</strong></p>
+<p>我们先从简单的实现开始，利用 jQuery 中的 $.ajax 来实现上诉的跨域调用。</p>
+<p>依然是上面的例子，我们将 服务器 3000 上的请求页面的 JavaScript 代码改为：</p>
+<blockquote>
+<p>// 回调函数</p>
+<p>function jsonpCallback(data) {</p>
+<pre><code>console.log(&quot;jsonpCallback: &quot; + data.name)
+</code></pre><p>}</p>
+<p>$(“#submit”).click(function() {</p>
+<pre><code>var data = {
+
+    name: $(&quot;#name&quot;).val(),
+
+    id: $(&quot;#id&quot;).val()
+
+};
+
+$.ajax({
+
+    url: &apos;http://localhost:3001/ajax/deal&apos;,
+
+    data: data,
+
+    dataType: &apos;jsonp&apos;,
+
+    cache: false,
+
+    timeout: 5000,
+
+    // jsonp 字段含义为服务器通过什么字段获取回调函数的名称
+
+    jsonp: &apos;callback&apos;,
+
+    // 声明本地回调函数的名称，jquery 默认随机生成一个函数名称
+
+    jsonpCallback: &apos;jsonpCallback&apos;,
+
+    success: function(data) {
+
+        console.log(&quot;ajax success callback: &quot; + data.name)
+
+    },
+
+    error: function(jqXHR, textStatus, errorThrown) {
+
+        console.log(textStatus + &apos; &apos; + errorThrown);
+
+    }
+
+});
+</code></pre><p>});</p>
+</blockquote>
+<p>服务器 3001 上对应的处理函数为：</p>
+<blockquote>
+<p>app.get(‘/ajax/deal’, function(req, res) {</p>
+<pre><code>console.log(&quot;server accept: &quot;, req.query.name, req.query.id)
+
+var data = &quot;{&quot; + &quot;name:&apos;&quot; + req.query.name + &quot; - server 3001 process&apos;,&quot; + &quot;id:&apos;&quot; + req.query.id + &quot; - server 3001 process&apos;&quot; +&quot;}&quot;
+
+var callback = req.query.callback
+
+var jsonp = callback + &apos;(&apos; + data + &apos;)&apos;
+
+console.log(jsonp)
+
+res.send(jsonp)
+
+res.end()
+</code></pre><p>})</p>
+</blockquote>
+<p>这里一定要注意 data 中字符串拼接，不能直接将 JSON 格式的 data 直接传给回调函数，否则会发生编译错误： parsererror Error: jsonpCallback was not called。</p>
+<p>其实脑海里应该有一个概念：利用 JSONP 格式返回的值一段要立即执行的 JavaScript 代码，所以不会像 ajax 的 XmlHttpRequest 那样可以监听不同事件对数据进行不同处理。</p>
+<p>处理结果如下所示：</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib14u1p5qwMSKMsNvfQUeU0cFNKR6cmGFD9Vzg8WGV9jmic9msqGRU3PDdOYib9rTJibkpiaGAibaVmpv6w/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt="img"></p>
+<p><strong>2.3 使用  标签原生实现 JSONP</strong></p>
+<p>经过上面的事件，你是不是觉得 JSONP 的实现和 Ajax 大同小异？</p>
+<p>其实，由于实现的原理不同，由 JSONP 实现的跨域调用不是通过 XmlHttpRequset 对象，而是通过 script 标签，所以在实现原理上，JSONP 和 Ajax 已经一点关系都没有了。看上去形式相似只是由于 jQuery 对 JSONP 做了封装和转换。</p>
+<p>比如在上面的例子中，我们假设要传输的数据 data 格式如下：</p>
+<blockquote>
+<p>{</p>
+<pre><code>name: &quot;chiaki&quot;,
+
+id&quot;: &quot;3001&quot;
+</code></pre><p>}</p>
+</blockquote>
+<p>那么数据是如何传输的呢？HTTP 请求头的第一行如下：</p>
+<blockquote>
+<p>GET /ajax/deal?callback=jsonpCallback&amp;name=chiaki&amp;id=3001&amp;_=1473164876032 HTTP/1.1</p>
+</blockquote>
+<p>可见，即使形式上是用 POST 传输一个 JSON 格式的数据，其实发送请求时还是转换成 GET 请求。</p>
+<p>其实如果理解 JSONP 的原理的话就不难理解为什么只能使用 GET 请求方法了。由于是通过 script 标签进行请求，所以上述传输过程根本上是以下的形式：</p>
+<blockquote>
+<script src = 'http://localhost:3001/ajax/deal?callback=jsonpCallback&name=chiaki&id=3001&_=1473164876032'></script>
+
+
+</p><p>这样从服务器返回的代码就可以直接在这个 script 标签中运行了。下面我们自己实现一个 JSONP：</p>
+<p>服务器 3000请求页面的 JavaScript 代码中，只有回调函数 jsonpCallback：</p>
+<blockquote>
+<p>function jsonpCallback(data) {</p>
+<pre><code>console.log(&quot;jsonpCallback: &quot;+data.name)
+</code></pre><p>}</p>
+</blockquote>
+<p>服务器 3000请求页面还包含一个 script 标签：</p>
+<blockquote>
+<script src="http://localhost:3001/jsonServerResponse?jsonp=jsonpCallback"></script>
+
+</blockquote>
+<p>服务器 3001上对应的处理函数：</p>
+<blockquote>
+<p>app.get(‘/jsonServerResponse’, function(req, res) {</p>
+<pre><code>var cb = req.query.jsonp
+
+console.log(cb)
+
+var data = &apos;var data = {&apos; + &apos;name: $(&quot;#name&quot;).val() + &quot; - server 3001 jsonp process&quot;,&apos; + &apos;id: $(&quot;#id&quot;).val() + &quot; - server 3001 jsonp process&quot;&apos; + &apos;};&apos;
+
+var debug = &apos;console.log(data);&apos;
+
+var callback = &apos;$(&quot;#submit&quot;).click(function() {&apos; + data + cb + &apos;(data);&apos; + debug + &apos;});&apos;
+
+res.send(callback)
+
+res.end()
+</code></pre><p>})</p>
+</blockquote>
+<p>与上面一样，我们在所获取的参数后面加上 “ – server 3001 jsonp process” 代表服务器对数据的操作。从代码中我么可以看到，处理函数除了根据参数做相应的处理，更多的也是进行字符串的拼接。</p>
+<p>最终的结果为：</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib14u1p5qwMSKMsNvfQUeU0cBlA3pC1azdbX6STic1B9VmwuP4wdCjReXzyx6UgB2TAiboqg5vIqEaPA/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt="img"></p>
+<p><strong>2.4 JSONP 总结</strong></p>
+<p>至此，我们了解了 JSONP 的原理以及实现方式，它帮我们实现前端跨域请求，但是在实践的过程中，我们还是可以发现它的不足：</p>
+<p>只能使用 GET 方法发起请求，这是由于 script 标签自身的限制决定的。</p>
+<p>不能很好的发现错误，并进行处理。与 Ajax 对比，由于不是通过 XmlHttpRequest 进行传输，所以不能注册 success、 error 等事件监听函数。</p>
+<p><strong>三、 使用 CORS 实现跨域调用</strong></p>
+<p><strong>3.1 什么是 CORS？</strong></p>
+<p>Cross-Origin Resource Sharing（CORS）跨域资源共享是一份浏览器技术的规范，提供了 Web 服务从不同域传来沙盒脚本的方法，以避开浏览器的同源策略，是 JSONP 模式的现代版。与 JSONP 不同，CORS 除了 GET 要求方法以外也支持其他的 HTTP 要求。用 CORS 可以让网页设计师用一般的 XMLHttpRequest，这种方式的错误处理比 JSONP 要来的好。另一方面，JSONP 可以在不支持 CORS 的老旧浏览器上运作。现代的浏览器都支持 CORS。</p>
+<p><strong>3.2 CORS 的实现</strong></p>
+<p>还是以 服务器 3000 上的请求页面向 服务器 3001 发送请求为例。</p>
+<p>服务器 3000 上的请求页面 JavaScript 不变，如下：</p>
+<blockquote>
+<p>$(function() {</p>
+<pre><code>$(&quot;#submit&quot;).click(function() {
+
+    var data = {
+
+        name: $(&quot;#name&quot;).val(),
+
+        id: $(&quot;#id&quot;).val()
+
+    };
+
+    $.ajax({
+
+        type: &apos;POST&apos;,
+
+        data: data,
+
+        url: &apos;http://localhost:3001/cors&apos;,
+
+        dataType: &apos;json&apos;,
+
+        cache: false,
+
+        timeout: 5000,
+
+        success: function(data) {
+
+            console.log(data)
+
+        },
+
+        error: function(jqXHR, textStatus, errorThrown) {
+
+            console.log(&apos;error &apos; + textStatus + &apos; &apos; + errorThrown);
+
+        }
+
+    });
+
+});
+</code></pre><p>});</p>
+</blockquote>
+<p>服务器 3001上对应的处理函数：</p>
+<blockquote>
+<p>app.post(‘/cors’, function(req, res) {</p>
+<pre><code>res.header(&quot;Access-Control-Allow-Origin&quot;, &quot;*&quot;);
+
+res.header(&quot;Access-Control-Allow-Headers&quot;, &quot;X-Requested-With&quot;);
+
+res.header(&quot;Access-Control-Allow-Methods&quot;, &quot;PUT,POST,GET,DELETE,OPTIONS&quot;);
+
+res.header(&quot;X-Powered-By&quot;, &apos; 3.2.1&apos;)
+
+res.header(&quot;Content-Type&quot;, &quot;application/json;charset=utf-8&quot;);
+
+var data = {
+
+    name: req.body.name + &apos; - server 3001 cors process&apos;,
+
+    id: req.body.id + &apos; - server 3001 cors process&apos;
+
+}
+
+console.log(data)
+
+res.send(data)
+
+res.end()
+</code></pre><p>})</p>
+</blockquote>
+<p>在服务器中对返回信息的请求头进行了设置。</p>
+<p>最终的结果为：</p>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/zPh0erYjkib14u1p5qwMSKMsNvfQUeU0cwZmFB4zHp1G2HEW3WLb532szlSVwma9doru5iayt4VVSk1fqfdmaM1g/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt="img"></p>
+<p><strong>3.3 CORS 中属性的分析</strong></p>
+<ol>
+<li><p>Access-Control-Allow-Origin</p>
+<p>The origin parameter specifies a URI that may access the resource. The browser must enforce this. For requests without credentials, the server may specify “*” as a wildcard, thereby allowing any origin to access the resource.</p>
+</li>
+<li><p>Access-Control-Allow-Methods</p>
+<p>Specifies the method or methods allowed when accessing the resource. This is used in response to a preflight request. The conditions under which a request is preflighted are discussed above.</p>
+</li>
+<li><p>Access-Control-Allow-Headers</p>
+<p>Used in response to a preflight request to indicate which HTTP headers can be used when making the actual request.</p>
+</li>
+</ol>
+<p><strong>3.4 CORS 与 JSONP 的对比</strong></p>
+<ol>
+<li>CORS 除了 GET 方法外，也支持其它的 HTTP 请求方法如 POST、 PUT 等。</li>
+<li>CORS 可以使用 XmlHttpRequest 进行传输，所以它的错误处理方式比 JSONP 好。</li>
+<li>JSONP 可以在不支持 CORS 的老旧浏览器上运作。</li>
+</ol>
+<p><strong>四、 一些其它的跨域调用方式</strong></p>
+<p><strong>4.1 window.name</strong></p>
+<p>window对象有个name属性，该属性有个特征：即在一个窗口 (window) 的生命周期内，窗口载入的所有的页面都是共享一个 window.name 的，每个页面对 window.name 都有读写的权限，window.name 是持久存在一个窗口载入过的所有页面中的，并不会因新页面的载入而进行重置。</p>
+<p><strong>4.2 window.postMessage()</strong></p>
+<p>这个方法是 HTML5 的一个新特性，可以用来向其他所有的 window 对象发送消息。需要注意的是我们必须要保证所有的脚本执行完才发送 MessageEvent，如果在函数执行的过程中调用了他，就会让后面的函数超时无法执行。</p>
+<p>参考：<a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage" target="_blank" rel="external">https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage</a></p>
 
       
 
@@ -571,7 +587,7 @@ res.on(`end`, () =&gt; resolve(data));
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">node.js</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">跨域</a>
         		</li>
       		
 		</ul>
@@ -627,7 +643,7 @@ res.on(`end`, () =&gt; resolve(data));
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2016/07/20/node-js的一些小知识/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2017/02/17/前端跨域请求原理及实践/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -641,18 +657,18 @@ res.on(`end`, () =&gt; resolve(data));
   
 <nav id="article-nav">
   
-    <a href="/2016/09/10/MVVM和Vue-js/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2017/04/20/理解javascript原型/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          MVVM和Vue.js
+          理解javascript原型
         
       </div>
     </a>
   
   
-    <a href="/2016/05/18/原生JS/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">原生JS</div>
+    <a href="/2016/09/10/MVVM和Vue-js/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">MVVM和Vue.js</div>
       <i class="icon-circle-right"></i>
     </a>
   
